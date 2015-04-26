@@ -2,7 +2,7 @@
 \alias{addZero}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Adding invisible zeros for plotting nices semantic maps
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
@@ -59,8 +59,8 @@ addZero(points, density = 0.02, grid = 10, boundary = 0.1, show = TRUE)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (points, density = 0.02, grid = 10, boundary = 0.1, 
-    show = TRUE) 
+function (points, density = 0.02, grid = 10, boundary = 0.1,
+    show = TRUE)
 {
     p <- xy.coords(points)
     k <- MASS::kde2d(p$x, p$y, n = grid)
@@ -73,9 +73,9 @@ function (points, density = 0.02, grid = 10, boundary = 0.1,
     pXmax <- max(k$x) + rX
     pYmin <- min(k$y) - rY
     pYmax <- max(k$y) + rY
-    borderX <- c(k$x, k$x, rep(pXmin, times = length(k$y)), rep(pXmax, 
+    borderX <- c(k$x, k$x, rep(pXmin, times = length(k$y)), rep(pXmax,
         times = length(k$y)))
-    borderY <- c(rep(pYmin, length(k$x)), rep(pYmax, length(k$x)), 
+    borderY <- c(rep(pYmin, length(k$x)), rep(pYmax, length(k$x)),
         k$y, k$y)
     if (show) {
         plot(borderX, borderY, col = "blue")
