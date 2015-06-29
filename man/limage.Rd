@@ -16,6 +16,9 @@ limage(x, col = rainbow(4), order = NULL, show.remaining = FALSE, cex.axis = 1, 
   \item{col}{
 %%     ~~Describe \code{col} here~~
 }
+  \item{order}{
+%%
+}
   \item{show.remaining}{
 %%     ~~Describe \code{show.remaining} here~~
 }

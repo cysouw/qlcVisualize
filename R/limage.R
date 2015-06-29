@@ -1,18 +1,20 @@
-limage <- function(x, col = rainbow(4), order = NULL
-				, show.remaining = FALSE
-				, cex.axis = 1
-				, cex.legend = 1
-				, cex.remaining = 1
-				, font = ""
-				) {
+limage <- function( x
+                  , col = rainbow(4)
+                  , order = NULL
+          				, show.remaining = FALSE
+          				, cex.axis = 1
+          				, cex.legend = 1
+          				, cex.remaining = 1
+          				, font = ""
+			          	) {
 
   # === reordering data ===
 
   x <- as.matrix(x)
 
   if (!is.null(order)) {
-    sim.cols <- qlcMatrix::sim.obs(t(data))
-    sim.rows <- qlcMatrix::sim.obs(data)
+    sim.cols <- qlcMatrix::sim.obs(t(x))
+    sim.rows <- qlcMatrix::sim.obs(x)
 
     if (order == "pca") {
 
@@ -33,20 +35,22 @@ limage <- function(x, col = rainbow(4), order = NULL
     } else if (order == "mds") {
 
       # classic MDS
-      # use first dimension
+      # use first dimension for ordering
       order.cols <- order(cmdscale(as.matrix(1-sim.cols))[,1])
       order.rows <- order(cmdscale(as.matrix(1-sim.rows))[,1])
 
     } else {
-      # use library seriation: "R2E" works nice
-      order.cols <- get_order(seriation::seriate(
-        as.dist(as.matrix(sim.cols))
-        , method = order
-      ))
-      order.rows <- get_order(seriation::seriate(
-        as.dist(as.matrix(sim.rows))
-        , method = order
-      ))
+
+      # use library seriation for ordering
+      # option "R2E" works nice for getting groups of data
+      order.cols <- seriation::get_order(seriation::seriate(
+                              as.dist(as.matrix(sim.cols))
+                              , method = order
+                            ))
+      order.rows <- seriation::get_order(seriation::seriate(
+                              as.dist(as.matrix(sim.rows))
+                              , method = order
+                            ))
     }
     x <- x[order.rows, order.cols]
   }
@@ -54,9 +58,9 @@ limage <- function(x, col = rainbow(4), order = NULL
 	# === plotting windows ===
 
 	plot.new()
-	par(  mar = c(5, 4, 4, 4) + 0.1
-		, family = font
-		)
+	op <- par(mar = c(5, 4, 4, 4) + 0.1
+		        , family = font
+		        )
 	plot.window(xlim=c(0,dim(x)[1])
 				    , ylim=c(0,dim(x)[2])
 				)
@@ -169,8 +173,6 @@ limage <- function(x, col = rainbow(4), order = NULL
 
 	# === return to default par settings ===
 
-	par(  mar = c(5, 4, 4, 1) + 0.1
-		, family = ""
-		)
+	par(op)
 
 }
