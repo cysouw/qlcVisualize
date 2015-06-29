@@ -1,9 +1,9 @@
-# add zeros in empty space around some points
+# determine points to set to zeros in empty space around some points
 
-addZero <- function(points
+boundary <- function(points
                     , density = 0.02
                     , grid = 10
-                    , boundary = 0.1
+                    , box.offset = 0.1
                     , show = TRUE) {
 
   p <- xy.coords(points)
@@ -13,8 +13,8 @@ addZero <- function(points
   zeroX <- k$x[zeros[,1]]
   zeroY <- k$y[zeros[,2]]
 
-  rX <- diff(range(p$x))*boundary
-  rY <- diff(range(p$y))*boundary
+  rX <- diff(range(p$x))*box.offset
+  rY <- diff(range(p$y))*box.offset
   pXmin <- min(k$x)-rX
   pXmax <- max(k$x)+rX
   pYmin <- min(k$y)-rY
@@ -32,9 +32,11 @@ addZero <- function(points
                )
 
   if (show) {
-    plot(borderX, borderY, col = "blue")
-    points(zeroX, zeroY, col = "red")
-    points(points)
+    plot(borderX, borderY, col = "blue", pch = 19)
+    contour(k, add = TRUE)
+    contour(k, level = density, col = "red", add = TRUE)
+    points(zeroX, zeroY, col = "red", pch =  19)
+    points(points, pch = 20)
   } else {
     return(xy.coords(c(zeroX,borderX),c(zeroY,borderY)))
   }

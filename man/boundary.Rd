@@ -1,5 +1,5 @@
-\name{addZero}
-\alias{addZero}
+\name{boundary}
+\alias{boundary}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Adding invisible zeros for plotting nices semantic maps
@@ -8,7 +8,7 @@ Adding invisible zeros for plotting nices semantic maps
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-addZero(points, density = 0.02, grid = 10, boundary = 0.1, show = TRUE)
+boundary(points, density = 0.02, grid = 10, boundary = 0.1, show = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,7 +21,7 @@ addZero(points, density = 0.02, grid = 10, boundary = 0.1, show = TRUE)
   \item{grid}{
 %%     ~~Describe \code{grid} here~~
 }
-  \item{boundary}{
+  \item{box.offset}{
 %%     ~~Describe \code{boundary} here~~
 }
   \item{show}{
