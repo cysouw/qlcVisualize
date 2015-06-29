@@ -4,7 +4,7 @@
 Drawing Semantic Maps
 }
 \description{
-Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. This function tries to emulate the linguistic tradition in an automatic fashion with various options for visual
+Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. This function tries to emulate the linguistic tradition in an automatic fashion with various options for visual presentation.
 }
 \usage{
 semmap(points, data,
