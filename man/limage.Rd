@@ -7,7 +7,7 @@ Level-images for visualisation of nominal data with various levels.
 A level-image ("l-image") is a counterpart of the base function \code{\link{image}} for nominal data with various levels. A matrix (or dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided (like with \code{\link{heatmap}}).
 }
 \usage{
-limage(x, col = rainbow(4), order = NULL, show.remaining = FALSE, cex.axis = 1, cex.legend = 1, cex.remaining = 1, font = "")
+limage(x, col = rainbow(4), order = NULL, show.remaining = FALSE, cex.axis = 1, cex.legend = 1, cex.remaining = 1, font = "", method = "hamming", control = NULL)
 }
 \arguments{
   \item{x}{
@@ -34,6 +34,12 @@ limage(x, col = rainbow(4), order = NULL, show.remaining = FALSE, cex.axis = 1, 
   \item{font}{
 %%     ~~Describe \code{font} here~~
 }
+  \item{method}{
+  Method used to determine similarity, passed to \code{qlcMatrix::sim.obs}
+  }
+  \item{control}{
+  List of options passed to \code{seriation::seriate}.
+  }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~

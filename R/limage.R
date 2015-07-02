@@ -6,6 +6,8 @@ limage <- function( x
           				, cex.legend = 1
           				, cex.remaining = 1
           				, font = ""
+                  , method = "hamming"
+                  , control = NULL
 			          	) {
 
   # === reordering data ===
@@ -13,43 +15,43 @@ limage <- function( x
   x <- as.matrix(x)
 
   if (!is.null(order)) {
-    sim.cols <- qlcMatrix::sim.obs(t(x))
-    sim.rows <- qlcMatrix::sim.obs(x)
+    sim.cols <- as.matrix(qlcMatrix::sim.obs(t(x), method = method))
+    sim.rows <- as.matrix(qlcMatrix::sim.obs(x, method = method))
 
     if (order == "pca") {
 
       # PCA on similarities (aka "correspondence analysis")
       # use second dimension for ordering
-      order.cols <- order(prcomp(as.matrix(sim.cols))$x[,2])
-      order.rows <- order(prcomp(as.matrix(sim.rows))$x[,2])
+      order.cols <- order(prcomp(sim.cols)$x[,2])
+      order.rows <- order(prcomp(sim.rows)$x[,2])
 
     } else if (order == "varimax") {
 
       # varimax rotations on PCA for ordering of correspondences
       # use second dimension
-      order.cols <- order(varimax(
-        prcomp(as.matrix(sim.cols))$x)$loadings[,2])
-      order.rows <- order(varimax(
-        prcomp(as.matrix(sim.rows))$x)$loadings[,2])
+      order.cols <- order(varimax(prcomp(sim.cols)$x)$loadings[,2])
+      order.rows <- order(varimax(prcomp(sim.rows)$x)$loadings[,2])
 
     } else if (order == "mds") {
 
       # classic MDS
       # use first dimension for ordering
-      order.cols <- order(cmdscale(as.matrix(1-sim.cols))[,1])
-      order.rows <- order(cmdscale(as.matrix(1-sim.rows))[,1])
+      order.cols <- order(cmdscale(max(sim.cols)-sim.cols)[,1])
+      order.rows <- order(cmdscale(max(sim.rows)-sim.rows)[,1])
 
     } else {
 
       # use library seriation for ordering
       # option "R2E" works nice for getting groups of data
       order.cols <- seriation::get_order(seriation::seriate(
-                              as.dist(as.matrix(sim.cols))
+                              as.dist(max(sim.cols)-sim.cols)
                               , method = order
+                              , control =  control
                             ))
       order.rows <- seriation::get_order(seriation::seriate(
-                              as.dist(as.matrix(sim.rows))
+                              as.dist(max(sim.rows)-sim.rows)
                               , method = order
+                              , control = control
                             ))
     }
     x <- x[order.rows, order.cols]
@@ -67,7 +69,7 @@ limage <- function( x
 
 	# === axes ===
 
-	rect(0, 0, dim(x)[1], dim(x)[2])
+	rect(0, 0, nrow(x), ncol(x))
 	axis(1
 		, at = c(1:dim(x)[1]) - 0.5
 		, labels = rownames(x)
@@ -138,6 +140,43 @@ limage <- function( x
 				, border = NA
 				)
 	}
+
+  # === add boxes for internal grouping ===
+  # coloring is difficul to get right, option ignored for now
+
+  if (FALSE) {
+
+  col.sim <- function(sim, order, levels = 30) {
+    dist <- as.matrix(max(sim)-sim)
+    reorder <- dist[order,order]
+    cut <- reorder[-nrow(sim),-1]
+    d <- diag(cut)
+    norm <- ceiling( (d/max(d))^4 * 9 + 1 )
+    return(rev(heat.colors(10))[norm])
+  }
+
+  rx <- nrow(x)-1
+  cx <- ncol(x)-1
+
+  row.boxesX <- cbind( (1:rx)-0.5, (1:rx)-0.5, (1:rx)+0.5, (1:rx)+0.5 )
+  row.boxesY <- cbind( rep(-1,rx), rep(-2,rx), rep(-2,rx), rep(-1,rx) )
+
+  polygon (cuts(t(row.boxesX))
+           , cuts(t(row.boxesY))
+           , col = col.sim(sim.rows, order.rows)
+           , border = NA
+           )
+
+  col.boxesY <- cbind( (1:cx)-0.5, (1:cx)-0.5, (1:cx)+0.5, (1:cx)+0.5 )
+  col.boxesX <- cbind( rep(-1,cx), rep(-2,cx), rep(-2,cx), rep(-1,cx) )
+
+  polygon (cuts(t(col.boxesX))
+           , cuts(t(col.boxesY))
+           , col = col.sim(sim.cols, order.cols)
+           , border = NA
+  )
+
+  }
 
 	# === add names of rare levels ===
 
