@@ -8,6 +8,6 @@ Maintainer: Michael Cysouw <cysouw@mac.com>
 Description: Collection of visualization as used in quantitative language comparison
 License: GPL-3
 Encoding: UTF-8
-Depends: fields, MASS, qlcMatrix, seriation
+Imports: fields, MASS, qlcMatrix, seriation, spatstat, raster, maps, mapdata, maptools, mapplots
 Suggests: knitr
 VignetteBuilder: knitr

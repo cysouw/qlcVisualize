@@ -60,16 +60,14 @@ limage <- function( x
 	# === plotting windows ===
 
 	plot.new()
-	op <- par(mar = c(5, 4, 4, 4) + 0.1
-		        , family = font
-		        )
+  op <- par(family = font)
 	plot.window(xlim=c(0,dim(x)[1])
 				    , ylim=c(0,dim(x)[2])
 				)
 
 	# === axes ===
 
-	rect(0, 0, nrow(x), ncol(x))
+	rect(-0.1, -0.1, nrow(x)+0.1, ncol(x)+0.1)
 	axis(1
 		, at = c(1:dim(x)[1]) - 0.5
 		, labels = rownames(x)
@@ -141,8 +139,8 @@ limage <- function( x
 				)
 	}
 
-  # === add boxes for internal grouping ===
-  # coloring is difficul to get right, option ignored for now
+  # === add boxes at the sides for internal grouping ===
+  # coloring is difficult to get right, option ignored for now
 
   if (FALSE) {
 

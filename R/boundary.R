@@ -38,6 +38,6 @@ boundary <- function(points
     points(zeroX, zeroY, col = "red", pch =  19)
     points(points, pch = 20)
   } else {
-    return(xy.coords(c(zeroX,borderX),c(zeroY,borderY)))
+    return(cbind(c(zeroX, borderX), c(zeroY, borderY)))
   }
 }

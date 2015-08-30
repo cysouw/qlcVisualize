@@ -1,39 +1,42 @@
-\name{semmap}
-\alias{semmap}
+\name{lmap}
+\alias{lmap}
+\alias{levelmap}
 \title{
-Drawing Semantic Maps
+Drawing multi-level maps (e.g. semantic maps or linguistic isoglosses)
 }
 \description{
+A multi-level map ("l-map") is a plot of the distribution of nominal data with multiple levels in space.
+
 Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. This function tries to emulate the linguistic tradition in an automatic fashion with various options for visual presentation.
 }
 \usage{
 semmap(points, data,
-   main = NULL, draw = 5, levels = c(41, 45, 51),
-   labels = NULL, cex = 0.7, col = NULL, lambda = NULL,
+   main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
+   labels = NULL, cex = 0.7, col = NULL, add = FALSE, lambda = NULL,
    legend = TRUE, position = "bottomleft", size = 0.7, font = NULL,
-   file.out = NULL, ...)
+   file.out = NULL, add.zeros = TRUE, ...)
 }
 \arguments{
   \item{points}{
-  Coordinates of the functions/senses, either specified as a two-column matrix or as \code{\link{xy.coords}}.
+  Coordinates of the functions/senses specified as a two-column matrix or dataframe.
 }
   \item{data}{
-  Language data to be plotted as overlay over the points. Either specified as a vector of language-specific forms, or as a numeric matrix with the forms as rows and the functions/senses as columns (the language-specific forms should be specified as rownames). The values in the matrix designate the occurrence of the forms, allowing for the encoding of frequency/typicality and of overlap of different forms being used in the same function.
+  Language data to be plotted as overlay over the points. Either specified as a vector of language-specific forms, or as a numeric matrix with the forms as columns and the functions/senses as rows (the language-specific forms should be specified as colnames). The values in the matrix designate the occurrence of the forms, allowing for the encoding of frequency/typicality and of overlap of different forms being used in the same function. see Details.
 }
   \item{main}{
   Title for the plot
 }
   \item{draw}{
-  Which forms to draw. Specifying a numeric value
+  Which forms to be drawn by contours. Specifying a numeric value will only draw the uppermost frequent forms in the data, by default only the topmost five forms are drawn. Alternatively, a vector with names or column-indices of the forms to be drawn can be specified.
 }
   \item{levels}{
-%%     ~~Describe \code{levels} here~~
+  height of contours to be drawn. Internally, all values are normalized between zero and one, so only values between those extremes are sensible. Line thickness is automatically balanced.
 }
   \item{labels}{
-%%     ~~Describe \code{labels} here~~
+  Optionally, labels for the functions/senses to be drawn instead of symbols in the plot.
 }
   \item{cex}{
-%%     ~~Describe \code{cex} here~~
+  Character expansion of the labels (see previous option). Also influences the size of symbols or pie-charts.
 }
   \item{col}{
 %%     ~~Describe \code{col} here~~
