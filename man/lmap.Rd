@@ -110,7 +110,7 @@ text <- gsub("\\\.", "\n", rownames(haspelmath))
 # using a quick dummy function to set all parameters
 tmp <- function(columns) {
   lmap(p, haspelmath[,columns]
-    , levels = .25, labels = text
+    , levels = .20, labels = text
     , density = .2, box = .2, lambda = .1, note = FALSE)
 }
 
