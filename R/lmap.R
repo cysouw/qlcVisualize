@@ -4,7 +4,7 @@ lmap <- function( points, data
 						, levels = c(0.41, 0.46, 0.51)
             , labels = NULL
             , cex = 0.7
-						, col = rainbow(draw)
+						, col = "rainbow"
 						, add = FALSE
         # smoothing paramater for Krig
             , lambda = NULL
@@ -13,10 +13,10 @@ lmap <- function( points, data
 						, position = "bottomleft"
 						, size = 0.7
 						, font = NULL
+						, note = TRUE
         # write to file
 						, file.out = NULL
 				# parameters passed through to function "boundary"
-				    , add.zeros = TRUE
 						, ...
 				) {
 
@@ -39,65 +39,95 @@ lmap <- function( points, data
     if (!is.numeric(data)) {
       stop("Matrix or dataframe can only contain numerical values")
     }
-    # and normalize between 0 and 1: each point (row) adds up to 1
-    data <- data/rowSums(data, na.rm = TRUE)
 	}
 
-  # check size of points and data
+  # check number of points and size of data
   if (nrow(points) != nrow(data)) {
     stop("Number of points does not correspond to the data supplied")
   }
 
   # points ignored because of no data
   ignore <- rowSums(data, na.rm = TRUE) == 0
+  empty.points.present <- sum(ignore) > 0
 
+  # normalize between 0 and 1: each point (row) adds up to 1
+  sums <- rowSums(data, na.rm = TRUE)
+  sums[sums == 0] <- 1
+  data <- data/sums
+
+  # check for multi-valued data
+  single.valued.data <- sum(data[data != 1 & data != 0], na.rm = TRUE) == 0
+
+  # =================================
   # which words to include in graphic
+  # =================================
+
   if (is.numeric(draw) & length(draw) == 1) {
     # only most frequent levels are included
     freq <- colSums(data, na.rm = TRUE)
     ordered <- order(freq, decreasing = TRUE, na.last = NA)
     selection <- na.omit(ordered[1:draw])
   } else if (is.numeric(draw)) {
+    # use numbers as column-numbers
     selection <- draw
   } else {
-    # manually selected levels in order selected
+    # manually selected level-names in order selected
     selection <- sapply(draw,function(x){which(colnames(data)==x)})
   }
+
   # the rest is added as "other" in the last column
-  nr.levels <- length(selection)
-  other <- rowSums(data[ , -selection, drop = FALSE])
-  data <- data[ , selection, drop = FALSE]
-  data <- cbind(data, other = other)
+  others.present <- length(selection) < ncol(data)
+  if (others.present) {
+    other <- rowSums(data[ , -selection, drop = FALSE])
+    data <- data[ , selection, drop = FALSE]
+    data <- cbind(data, other = other)
+  } else {
+    data <- data[ , selection, drop = FALSE]
+  }
 
-  # check for multi-valued data
-  maxrow <- apply(data[!ignore, 1:nr.levels, drop = FALSE], 1, max, na.rm = TRUE)
-  single.valued <- sum(maxrow !=  1 & maxrow != 0) == 0
+  # ===========
+  # set colours
+  # ===========
 
-	# set grey colors when "col = NULL"
-  if (!is.null(col)) {
-    # check number of colors
-    if (length(col) != length(selection)) {
-      stop("Number of colors specified at 'col' should be the same as number of levels to plot specified at 'draw'")
+  if (is.null(col)) {
+
+    # grey when col = NULL
+
+    if (single.valued.data) {
+      col <- rep("black", times = length(selection))
+      if (others.present) { col <- c(col, "grey") }
+    } else {
+      col <- grey( (0:length(selection)) / (length(selection)+1) )
+      if (others.present) { col <- c(col, "white") }
+    }
+
+  } else {
+
+    # either use in-built palette or manually specify colors
+
+    palettes <- c("rainbow"
+                  , "heat.colors"
+                  , "terrain.colors"
+                  , "topo.colors"
+                  , "cm.colors")
+
+    if (!is.na(pmatch(col, palettes))) {
+      cols <- paste0(palettes[pmatch(col, palettes)]
+                     , "(", length(selection), ")"
+                     )
+      col <- eval(parse(text = cols))
+    } else if (length(col) != length(selection)) {
+      stop("Number of colors specified at 'col' should be the same as number of levels to plot specified at 'draw', or it should be a name of a built-in palette")
     }
     # add grey for other levels
-    col <- c(col, "grey")
-  }
-  if (is.null(col) & single.valued) {
-    col <- rep("black", times = nr.levels)
-    # others get color grey
-    col <- c(col, "grey")
-  }
-  if (is.null(col) & !single.valued) {
-    # others get color white "grey(1)"
-    col <- grey(0:(nr.levels+1)/(nr.levels+1))
+    if (others.present) {
+      col <- c(col, "grey")
+    }
   }
 
+  # determine interpolation area
   # add zero coordinates to get nicer plotted areas
-	if (add.zeros) {
-    zeros <- boundary(points, show = FALSE, ...)
-	} else {
-	  zeros <- NULL
-	}
+  zeros <- boundary(points, show = FALSE, ...)
 
 	# ========
 	# plotting
@@ -116,12 +146,11 @@ lmap <- function( points, data
 
   	# prepare plotting frame
   	plot( rbind(points, zeros)
+  	      , main = main
       		, type = "n"
       		, xlab = ""
       		, ylab = ""
-      		, main = main
-      		, xaxt = "n"
-      		, yaxt = "n"
+      		, axes = FALSE
       		)
 	}
 
@@ -130,7 +159,7 @@ lmap <- function( points, data
   # using package "fields"
 	# =============
 
-	for (i in 1:nr.levels) {
+	for (i in 1:length(selection)) {
 
 	  # determine height
 	  h <- data[,i]
@@ -160,9 +189,13 @@ lmap <- function( points, data
 
 	if (legend) {
 	  par(family = font)
-	  if (single.valued) {
+	  if (single.valued.data & is.null(labels)) {
+
+	    pch <- 1:length(selection)
+	    if (others.present) { pch <- c(pch, 0) }
+
 	    legend( position
-	            , pch = c(1:nr.levels,0)
+	            , pch = pch
 	            , legend = colnames(data)
 	            , cex = size
 	            , col = col
@@ -177,6 +210,21 @@ lmap <- function( points, data
 	  par(family = NULL)
 	}
 
+  # =====================
+  # add note about levels
+  # =====================
+
+  if (note) {
+    text(  mean(range(zeros[,1]))
+         , min(zeros[,2])
+         , cex = size
+         , col = "grey"
+         , labels = paste0("Levels drawn at "
+                          , paste(100 * levels, collapse = "-")
+                          , "%")
+    )
+  }
+
 	# =============================
   # plot labels or points or pies
 	# =============================
@@ -186,31 +234,32 @@ lmap <- function( points, data
 
     # add small grey points for points without data
     points( points[ignore, ,drop = FALSE]
+            , pch = 20
             , col = "grey"
-            , cex = cex/2
+            , cex = cex
           )
 
-    if (single.valued) {
+    if (single.valued.data) {
       # plotting symbols if maximally one symbol per point
-      for (i in 1:nr.levels) {
+      for (i in 1:length(selection)) {
         points( points[data[,i] > 0, , drop = FALSE]
                 , pch = i
                 , cex = cex
                 , col = col[i]
                )
       }
-      if (ncol(data)>nr.levels) {
-        points( points[data[,nr.levels+1] > 0, , drop = FALSE]
+      if (ncol(data)>length(selection)) {
+        points( points[data[,length(selection)+1] > 0, , drop = FALSE]
                 , pch = 0
                 , cex = cex
-                , col = col[nr.levels+1])
+                , col = col[length(selection)+1])
       }
     } else {
       # otherwise plot pies. This implementation is slow!!!
       mapplots::draw.pie( x = points[!ignore,1]
                           , y = points[!ignore,2]
                           , z = data[!ignore,]
-                          , radius = cex
+                          , radius = cex/20
                           , col = col
                           )
     }
@@ -222,15 +271,19 @@ lmap <- function( points, data
     }
     bw <- rep("black", times = nrow(points))
     bw[ignore] <- "grey"
+
+    par(family = font)
     text( points
           , labels = labels
           , col = bw
           , cex = cex
     )
+    par(family = NULL)
+
   }
 
 	# close plotting device when saving to file
 	if (!is.null(file.out)) {
 		dev.off()
-		}
+	}
 }
