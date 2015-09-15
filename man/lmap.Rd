@@ -91,23 +91,26 @@ f4 <- hessen$data[,9:13]
 boundary(hessen$villages, density = 0.1, grid = 10)
 
 # useful size of pies has to be determined by changing cex
-lmap(hessen$villages, f4, draw = 3, cex = 0.4, density = 0.1, grid = 10)
+lmap(hessen$villages, f4, draw = 3, cex = 0.6, density = 0.1, grid = 10)
 plot(hessen$boundary, add = TRUE)
 
 # semantic map example
+# location of points via multidimensional scaling of complete data
 data(haspelmath)
 d <- dist(haspelmath)
 p <- MASS::isoMDS(d)$points/10
 
+# testing boundary parameters
 boundary(p, density = .2, box = .2)
 
+# labels to be plotted instead of points
 text <- gsub("\\\.", "\n", rownames(haspelmath))
 
 # show a few languages
-
+# using a quick dummy function to set all parameters
 tmp <- function(columns) {
   lmap(p, haspelmath[,columns]
-    , levels = .2, labels = text
+    , levels = .25, labels = text
     , density = .2, box = .2, lambda = .1, note = FALSE)
 }
 
