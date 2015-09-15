@@ -59,7 +59,8 @@ voronoi <- function(points, window) {
 # default plotting of tessalations in spatstat is not easy to use with colour filling
 # ====================
 
-vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", internal.border = "grey", lwd = 1) {
+vmap <- function(tesselation, col = NULL, d = NULL, power = 0.5, add = FALSE, border = "black", internal.border = "grey", lwd = 1) {
+
 	if (!add) {
 		plot(0,0
 			, xlim = tesselation$window$xrange
@@ -72,7 +73,23 @@ vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", interna
 
 	tiles <- spatstat::tiles(tesselation)
 	nr <- length(tiles)
-	col <- rep(col, times = ceiling(nr/length(col)))
+
+	# determine colors
+	if (is.null(d)) {
+	  # repeat if necesary
+	  col <- rep(col, times = ceiling(nr/length(col)))
+	} else {
+	  # Heeringa-style colouring of MDS dimensions turned RGB
+	  mds <- cmdscale(d, k=3)
+	  norm <- function(x){
+	    x <- abs(x)^power * sign(x)
+	    (x-min(x))/(max(x)-min(x))
+	  }
+	  mds <- apply(mds, 2, norm)
+	  col <- rgb(mds)
+	}
+
+	# plot all tiles individually, to allow for separate colors
 	for (i in 1:nr) {
 		spatstat::plot.owin(tiles[[i]]
 							, add = TRUE
@@ -82,6 +99,7 @@ vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", interna
 							)
 	}
 
+	# add outer border
 	spatstat::plot.owin(tesselation$window
 						, add = TRUE
 						, border =  border

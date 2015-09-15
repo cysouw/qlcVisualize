@@ -8,11 +8,11 @@
 Plotting a Voronoi-map ("v-map")
 }
 \description{
-A "voronoi-map" (voronoi-tesselation, also known as dirichlet tesselation) is frequently used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tesselations. Also described here are a few helper functions to obtain geographical boundary, and to produce the tessalation.
+A "voronoi-map" (voronoi-tesselation, also known as dirichlet tesselation) is used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tesselations. Also described here are a few helper functions to obtain geographical boundary, and to produce the tessalation.
 }
 \usage{
-vmap(tesselation, col = NULL, add = FALSE
-  , border = "black", internal.border = "grey", lwd = 1)
+vmap(tesselation, col = NULL, d = NULL, power = 0.5,
+  add = FALSE, border = "black", internal.border = "grey", lwd = 1)
 
 voronoi(points, window)
 mapsToOwin(country, database = "worldHires")
@@ -25,6 +25,12 @@ Tessalation of class \code{\link[spatstat]{tess}} from the library \code{\link[s
   \item{col}{
 Vector of colors for the filling of the tessalation. Is recycled when there are more tiles than colours. The order of the tiles is the same as the order of the points as specified in the function \code{\link{voronoi}}.
 }
+  \item{d}{
+\code{\link{dist}} object specifying distances between points. When supplied, these distances are used to determine the colouring, following the idea by Heeringa (2004). Basically, the three first dimensions of a multidimensional scaling are mapped to the RGB-dimensions of color.
+  }
+  \item{power}{
+Factor used to influence the results of the multidimensional scaling. Values closer to one will lead to clearer separated colours, while higher values will lead to more gradual colours.
+  }
   \item{add}{
 Add graphics to an existing plot
 }
@@ -37,7 +43,7 @@ Colour of the inner borders. Specifying \code{NA} removes all borders.
   \item{lwd}{
 Line width of all borders
 }
-  \item{point}{
+  \item{points}{
 Two-column matrix with all coordinates of the points to make a voronoi tessalation.
   }
   \item{window}{
@@ -73,23 +79,42 @@ The function \code{gadmToOwin} needs online access to download the data. The dat
 # Boundary of the German state "Hessen"
 # This will need to access the GADM database online
 \dontrun{
-hessen <- gadmToOwin("DEU","Hessen",1)}
+boundary <- gadmToOwin("DEU","Hessen",1)}
+
 # As an offline example, the result is included in the package
 data(hessen)
-plot(hessen)
+plot(hessen$boundary)
 
 # Does not have to be continuous
+\dontrun{
 random <- mapsToOwin(c("Germany","Greece"))
-plot(random)
+plot(random)}
 
 # make a voronoi tessalation for some villages in hessen
-data(villages)
-plot(hessen); points(villages,cex=.3)
+data(hessen)
+plot(hessen$boundary); points(hessen$villages,cex=.3)
 
-tessalation <- voronoi(villages, hessen)
+tessalation <- voronoi(hessen$villages, hessen$boundary)
 plot(tessalation)
 
-# make a resizable plot with easy colour specification
+# make a resizable plot with random colour specification
 vmap(tessalation, col = rainbow(5), i = NA)
-legend("bottomright",legend = c("a","b","c","d","e"),fill = rainbow(5))
+legend("bottomright", legend = c("a","b","c","d","e"), fill = rainbow(5))
+
+# use actual colors from data, using first feature from supplied data
+# multiple levels cannot easily be shown
+# consider \link{lmap} for more detail
+d1 <- hessen$data[,1:3]
+d1 <- d1[,1]/rowSums(d1)
+vmap(tessalation, col = rgb(1, 1-d1, 1-d1))
+text(hessen$villages,labels=hessen$data[,1],cex=.5)
+legend("bottomright", legend = c("es mir", "mir es / other"),
+  fill = c("red", "white"))
+
+# Use distances to determine colour, as proposed by Heeringa (2004)
+# Note that different methods to establish distances can lead to rather
+# different results! Also try method = "euclidean"
+d <- dist(hessen$data, method = "canberra")
+vmap(tessalation, d = d)
+
 }
