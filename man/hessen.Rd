@@ -15,7 +15,7 @@ List of 3
   }
   \item{\code{villages}: A dataframe with two variables "longitude" and "latitude" for the 157 villages on this there is data in this dataset.
   }
-  \itme{\code{data}: Dataframe with 56 different characteristics of these 157 villages, distributed over 15 different variables (as indicated in the column names).
+  \item{\code{data}: Dataframe with 56 different characteristics of these 157 villages, distributed over 15 different variables (as indicated in the column names).
   }
 }
 }
