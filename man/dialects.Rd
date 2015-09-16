@@ -11,8 +11,8 @@ In total 34 different words in which an f-like sound occurs. The differnt pronun
 \format{
 List of 2:
 \describe{
-  \item{\code{villages}: Dataframe with two variables LONGITUDE and LATITUDE for all 183 villages}
-  \item{\code{data}: Matrix with 34 columns showing the pronunciation in the 183 villages.}
+\item{\code{villages}}{Dataframe with two variables LONGITUDE and LATITUDE for all 183 villages.}
+\item{\code{data}}{Matrix with 34 columns showing the pronunciation in the 183 villages.}
 }
 }
 \source{
