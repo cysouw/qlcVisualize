@@ -6,13 +6,17 @@ limage <- function( x
           				, cex.legend = 1
           				, cex.remaining = 1
           				, font = ""
+          				, asp = 1
                   , method = "hamming"
                   , control = NULL
+          				, plot = TRUE
 			          	) {
 
   # === reordering data ===
 
   x <- as.matrix(x)
+  order.rows <- 1:nrow(x)
+  order.cols <- 1:ncol(x)
 
   if (!is.null(order)) {
     sim.cols <- as.matrix(qlcMatrix::sim.obs(t(x), method = method))
@@ -57,13 +61,16 @@ limage <- function( x
     x <- x[order.rows, order.cols]
   }
 
+  if (plot) {
+
 	# === plotting windows ===
 
 	plot.new()
-  op <- par(family = font)
+  op <- par(family = font, mar = c(5,4,4,4) + 0.1)
 	plot.window(xlim=c(0,dim(x)[1])
-				    , ylim=c(0,dim(x)[2])
-				)
+			       , ylim=c(0,dim(x)[2])
+			       , asp = asp
+			      	)
 
 	# === axes ===
 
@@ -75,6 +82,7 @@ limage <- function( x
 		, las = 2
 		, cex.axis = cex.axis
 		, mgp = c(3,0,0)
+		, pos = - 0.5
 		)
 	axis(2
 		, at = c(1:dim(x)[2]) - 0.5
@@ -83,6 +91,7 @@ limage <- function( x
 		, las = 2
 		, cex.axis = cex.axis
 		, mgp = c(3,0,0)
+		, pos = - 0.5
 		)
 
 	# === show missing data	===
@@ -139,43 +148,6 @@ limage <- function( x
 				)
 	}
 
-  # === add boxes at the sides for internal grouping ===
-  # coloring is difficult to get right, option ignored for now
-
-  if (FALSE) {
-
-  col.sim <- function(sim, order, levels = 30) {
-    dist <- as.matrix(max(sim)-sim)
-    reorder <- dist[order,order]
-    cut <- reorder[-nrow(sim),-1]
-    d <- diag(cut)
-    norm <- ceiling( (d/max(d))^4 * 9 + 1 )
-    return(rev(heat.colors(10))[norm])
-  }
-
-  rx <- nrow(x)-1
-  cx <- ncol(x)-1
-
-  row.boxesX <- cbind( (1:rx)-0.5, (1:rx)-0.5, (1:rx)+0.5, (1:rx)+0.5 )
-  row.boxesY <- cbind( rep(-1,rx), rep(-2,rx), rep(-2,rx), rep(-1,rx) )
-
-  polygon (cuts(t(row.boxesX))
-           , cuts(t(row.boxesY))
-           , col = col.sim(sim.rows, order.rows)
-           , border = NA
-           )
-
-  col.boxesY <- cbind( (1:cx)-0.5, (1:cx)-0.5, (1:cx)+0.5, (1:cx)+0.5 )
-  col.boxesX <- cbind( rep(-1,cx), rep(-2,cx), rep(-2,cx), rep(-1,cx) )
-
-  polygon (cuts(t(col.boxesX))
-           , cuts(t(col.boxesY))
-           , col = col.sim(sim.cols, order.cols)
-           , border = NA
-  )
-
-  }
-
 	# === add names of rare levels ===
 
 	if (show.remaining) {
@@ -197,8 +169,8 @@ limage <- function( x
 
 	# === add legend ===
 
-	legend(x = dim(x)[1]
-		 , y = dim(x)[2]
+	legend(x = dim(x)[1] + 0.2
+		 , y = dim(x)[2] + 0.2
 		 , legend = c(levs, "other", "NA")
 		 , xpd = TRUE
 		 , pch = c(rep(15, times =  length(levs)), pch.remaining, 20)
@@ -212,4 +184,9 @@ limage <- function( x
 
 	par(op)
 
+	# === return ordering when asked ===
+
+  } else {
+    return(list(rows = order.rows, cols = order.cols))
+  }
 }

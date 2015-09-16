@@ -111,11 +111,13 @@ lmap <- function( points, data
                   , "topo.colors"
                   , "cm.colors")
 
-    if (!is.na(pmatch(col, palettes))) {
-      cols <- paste0(palettes[pmatch(col, palettes)]
-                     , "(", length(selection), ")"
-                     )
-      col <- eval(parse(text = cols))
+    if (length(col) ==  1) {
+      if (!is.na(pmatch(col, palettes))) {
+        cols <- paste0(palettes[pmatch(col, palettes)]
+                       , "(", length(selection), ")"
+                       )
+        col <- eval(parse(text = cols))
+      }
     } else if (length(col) != length(selection)) {
       stop("Number of colors specified at 'col' should be the same as number of levels to plot specified at 'draw', or it should be a name of a built-in palette")
     }
@@ -215,14 +217,13 @@ lmap <- function( points, data
   # =====================
 
   if (note) {
-    text(  mean(range(zeros[,1]))
-         , min(zeros[,2])
-         , cex = size
-         , col = "grey"
-         , labels = paste0("Levels drawn at "
-                          , paste(100 * levels, collapse = "-")
-                          , "%")
-    )
+    mtext(paste0("Levels drawn at "
+                  , paste(100 * levels, collapse = "-")
+                  , "%")
+          , side = 1
+          , cex = size
+          , col = "grey"
+          )
   }
 
 	# =============================
