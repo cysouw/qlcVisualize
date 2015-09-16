@@ -91,8 +91,14 @@ f4 <- hessen$data[,9:13]
 boundary(hessen$villages, density = 0.1, grid = 10)
 
 # useful size of pies has to be determined by changing cex
-lmap(hessen$villages, f4, draw = 3, cex = 0.6, density = 0.1, grid = 10)
-plot(hessen$boundary, add = TRUE)
+plot(hessen$boundary, main = NULL)
+lmap(hessen$villages, f4, draw = 3, cex = 0.6, density = 0.1, grid = 10, add = TRUE)
+
+# another isogloss example: "f" in German dialects in the words "Kochlöffel"
+maps::map("worldHires", "Germany", fill = TRUE, col = "grey90")
+data(dialects)
+lmap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24), add = TRUE, position = "topleft")
+title(main = "f-sound in \'Kochlöffel\'")
 
 # semantic map example
 # location of points via multidimensional scaling of complete data
