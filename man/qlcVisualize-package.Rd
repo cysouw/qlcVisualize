@@ -3,27 +3,21 @@
 \alias{qlcVisualize}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Visualizations for Quantitative Language Comparison (QLC)
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+A collection of specific visualisations of data as used in QLC.
 }
 \details{
 \tabular{ll}{
 Package: \tab qlcVisualize\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2015-04-23\cr
+Version: \tab 0.2\cr
+Date: \tab 2015-09-16\cr
 License: \tab GPL-3\cr
 }
-~~ An overview of how to use the package, including the most ~~
-~~ important functions ~~
+Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("level-map") and \link{limage} {"level-image"}, and some assistance for making geographic voronoi maps \link{vmap}.
 }
 \author{
 Michael Cysouw <cysouw@mac.com>
-}
-\examples{
-~~ simple examples of the most important functions ~~
 }
