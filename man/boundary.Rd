@@ -7,7 +7,8 @@ Checking boundary parameters vor plotting of \code{lmap}
 The function \code{\link{lmap}} can be tweaked by various parameters determining the boundary of the interplolation. The function \code{boundary} helps finding suitable parameters.
 }
 \usage{
-boundary(points, density = 0.02, grid = 10, box.offset = 0.1, tightness = "auto", manual = NULL, show = TRUE)
+boundary(points, density = 0.02, grid = 10, box.offset = 0.1
+  , tightness = "auto", manual = NULL, plot = TRUE)
 }
 \arguments{
   \item{points}{
@@ -51,7 +52,8 @@ Used internally in \code{\link{lmap}}. The parameters of this function can be pa
 data(hessen)
 
 # show impact of the chosen parameters
-boundary(hessen$villages, density = 0.1, grid = 20, manual = cbind(x = c(8.3, 9.2), y = c(49.9, 50.0)))
+boundary(hessen$villages, density = 0.1, grid = 20
+  , manual = cbind(x = c(8.3, 9.2), y = c(49.9, 50.0)))
 
 # return coordinates
 boundary(hessen$villages, plot = FALSE)

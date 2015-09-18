@@ -3,7 +3,7 @@
 \alias{voronoimap}
 \alias{voronoi}
 \alias{gadmToOwin}
-\alias{mapToOwin}
+\alias{mapsToOwin}
 \title{
 Plotting a Voronoi-map ("v-map")
 }
@@ -16,7 +16,7 @@ vmap(tesselation, col = NULL, d = NULL, power = 0.5,
 
 voronoi(points, window)
 mapsToOwin(country, database = "worldHires")
-gadmToOwin(country, sub = NULL, level = 0, path = "")
+gadmToOwin(country, sub = NULL, level = 0)
 }
 \arguments{
   \item{tesselation}{

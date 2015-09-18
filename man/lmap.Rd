@@ -127,6 +127,7 @@ tmp <- function(columns) {
     , lambda = 0.1, note = FALSE)
 }
 
+\dontrun{
 par(mfcol = c(2,3))
 tmp(1:3)
 tmp(4:6)
@@ -134,6 +135,6 @@ tmp(7:9)
 tmp(10:12)
 tmp(13:17)
 tmp(18:22)
-par(mfcol = c(1,1))
+par(mfcol = c(1,1))}
 
 }

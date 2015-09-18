@@ -10,7 +10,7 @@ A multi-level image ("l-image") is a counterpart of the base function \code{\lin
 \usage{
 limage(x, col = rainbow(4), order = NULL,
   show.remaining = FALSE, cex.axis = 1, cex.legend = 1, cex.remaining = 1,
-  font = "", asp = 1, method = "hamming", control = NULL)
+  font = "", asp = 1, method = "hamming", control = NULL, plot = TRUE)
 }
 \arguments{
   \item{x}{
@@ -78,7 +78,7 @@ x
 # some basic level-images
 limage(x)
 limage(x, col = heat.colors(5), asp = NA)
-limage(x, col = list(b="red",e="blue"), show.remaining = T)
+limage(x, col = list(b="red",e="blue"), show.remaining = TRUE)
 
 \dontrun{
 # more interesting example, different "f" sounds in german dialects

@@ -139,10 +139,10 @@ lmap <- function( points, data
 
 	  # open plotting device for saving file
   	if (!is.null(file.out)) {
-  		quartz(	width = 6
-  				, height = 6
-  				, type = "pdf"
-  				, file = file.out
+  		dev.new(width = 6
+  			  	, height = 6
+  				  , type = "pdf"
+  				  , file = file.out
   		)
   	}
 
