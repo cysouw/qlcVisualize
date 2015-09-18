@@ -88,7 +88,7 @@ plot(hessen$boundary)
 # Does not have to be continuous
 \dontrun{
 random <- mapsToOwin(c("Germany","Greece"))
-plot(random)}
+plot(random, main = NULL)}
 
 # make a voronoi tessalation for some villages in hessen
 data(hessen)

@@ -85,9 +85,12 @@ limage(x, col = list(b="red",e="blue"), show.remaining = T)
 # note that fonts might be problematic on some platforms
 # plotting window should be made really large as well
 data(dialects)
-limage(dialects$data, col = rainbow(8), order = "R2E", cex.axis = 0.3, cex.legend = 0.7, show.remaining = T, cex.remaining = 0.2)
+limage(dialects$data, col = rainbow(8), order = "R2E"
+    , cex.axis = 0.3, cex.legend = 0.7
+    , show.remaining = T, cex.remaining = 0.2)
 
-# get reordering of rows, to identify the group of words with "p-f" correspondences
+# get reordering of rows
+# to identify the group of words with "p-f" correspondences
 limage(dialects$data, order = "R2E", plot = FALSE)
 }
 }

@@ -1,93 +1,67 @@
 \name{boundary}
 \alias{boundary}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Adding invisible zeros for plotting nices semantic maps
+Checking boundary parameters vor plotting of \code{lmap}
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{\link{lmap}} can be tweaked by various parameters determining the boundary of the interplolation. The function \code{boundary} helps finding suitable parameters.
 }
 \usage{
-boundary(points, density = 0.02, grid = 10, boundary = 0.1, show = TRUE)
+boundary(points, density = 0.02, grid = 10, box.offset = 0.1, tightness = "auto", manual = NULL, show = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{points}{
-%%     ~~Describe \code{points} here~~
+Points, typically a two-column matrix with x and y coordinates.
 }
   \item{density}{
-%%     ~~Describe \code{density} here~~
+Density of points below which there should be no interpolation.
 }
   \item{grid}{
-%%     ~~Describe \code{grid} here~~
+Density of the grid.
 }
   \item{box.offset}{
-%%     ~~Describe \code{boundary} here~~
+Distance of the box around the points.
 }
-  \item{show}{
-%%     ~~Describe \code{show} here~~
+  \item{tightness}{
+Parameter influencing how tightly the boundary should be wrapped around the points. Passed internally to \link[MASS]{kde2d}. When \code{"auto"} this defaults to \link[MASS]{bandwidth.nrd}. Lower values will result in tighter boundaries.
+  }
+  \item{manual}{
+Manually added boundary points in the form of a two-column matrix with coordinates.
+  }
+  \item{plot}{
+Logical: by default the impact of the chosen parameters is shown. If \code{FALSE} then coordinates are returned that are the outside of the boundary.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+Instead of trying to use a polygon as a boundary for the interpolation internally in \code{\link{lmap}} it turned out to be easier to use a collection of points that mark th
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+By default, returns a plot with the original points in black, the points below density in red, and the box around the points in blue. Contour lines of the density are shown to choose different density parameters.
+
+When \code{plot = FALSE}, the blue and red points from the graphic are returned as a two-column matrix of x and y coordinates.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
-%%  ~~who you are~~
+Michael Cysouw <cysouw@mac.com>
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Used internally in \code{\link{lmap}}. The parameters of this function can be passed through, typically \code{density} and \code{box.offset}.
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+data(hessen)
 
-## The function is currently defined as
-function (points, density = 0.02, grid = 10, boundary = 0.1,
-    show = TRUE)
-{
-    p <- xy.coords(points)
-    k <- MASS::kde2d(p$x, p$y, n = grid)
-    zeros <- which(k$z < density, arr.ind = TRUE)
-    zeroX <- k$x[zeros[, 1]]
-    zeroY <- k$y[zeros[, 2]]
-    rX <- diff(range(p$x)) * boundary
-    rY <- diff(range(p$y)) * boundary
-    pXmin <- min(k$x) - rX
-    pXmax <- max(k$x) + rX
-    pYmin <- min(k$y) - rY
-    pYmax <- max(k$y) + rY
-    borderX <- c(k$x, k$x, rep(pXmin, times = length(k$y)), rep(pXmax,
-        times = length(k$y)))
-    borderY <- c(rep(pYmin, length(k$x)), rep(pYmax, length(k$x)),
-        k$y, k$y)
-    if (show) {
-        plot(borderX, borderY, col = "blue")
-        points(zeroX, zeroY, col = "red")
-        points(points)
-    }
-    else {
-        return(xy.coords(c(zeroX, borderX), c(zeroY, borderY)))
-    }
-  }
+# show impact of the chosen parameters
+boundary(hessen$villages, density = 0.1, grid = 20, manual = cbind(x = c(8.3, 9.2), y = c(49.9, 50.0)))
+
+# return coordinates
+boundary(hessen$villages, plot = FALSE)
+
+# abstract example, showing tightness in action
+p <- cbind(c(1:10, 1:10), c(1:10, 10:1))
+par(mfrow = c(1,3))
+boundary(p, density = 0.005, grid = 20, tightness = "auto")
+boundary(p, density = 0.005, grid = 20, tightness = 5)
+boundary(p, density = 0.005, grid = 20, tightness = 3)
+par(mfrow = c(1,1))
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

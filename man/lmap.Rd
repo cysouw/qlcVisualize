@@ -14,8 +14,8 @@ Isoglosses show lines surrounding similar phenomena in space. Instead of drawing
 \usage{
 lmap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
-   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE, lambda = NULL,
-   legend = TRUE, position = "bottomleft", size = 0.7, font = NULL,
+   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE, lambda = NA,
+   legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
    note = TRUE, file.out = NULL, ...)
 }
 \arguments{
@@ -55,7 +55,7 @@ lmap(points, data,
   \item{position}{
 Where should the legend be positioned? Passed internally to \link{legend}.
 }
-  \item{size}{
+  \item{cex.legend}{
 Character expansion passed to \link{legend}, and also used for the indication of the levels in the plot
 }
   \item{font}{
@@ -92,22 +92,28 @@ boundary(hessen$villages, density = 0.1, grid = 10)
 
 # useful size of pies has to be determined by changing cex
 plot(hessen$boundary, main = NULL)
-lmap(hessen$villages, f4, draw = 3, cex = 0.6, density = 0.1, grid = 10, add = TRUE)
+lmap(hessen$villages, f4, draw = 3, cex = 0.8
+  , density = 0.1, grid = 10, add = TRUE, cex.legend = 0.5)
 
-# another isogloss example: "f" in German dialects in the words "Kochlöffel"
-maps::map("worldHires", "Germany", fill = TRUE, col = "grey90")
+# another isogloss example:
+# "f" sounds in German dialects in the words "Kochlöffel"
+library(mapdata)
+map("worldHires", "Germany", fill = TRUE, col = "grey90")
+
 data(dialects)
-lmap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24), add = TRUE, position = "topleft")
+lmap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24)
+    , add = TRUE, position = "topleft")
 title(main = "f-sound in \'Kochlöffel\'")
 
 # semantic map example
 # location of points via multidimensional scaling of complete data
 data(haspelmath)
 d <- dist(haspelmath)
-p <- MASS::isoMDS(d)$points/10
+p <- MASS::isoMDS(d)$points
 
 # testing boundary parameters
-boundary(p, density = .2, box = .2)
+boundary(p)
+boundary(p, density = 0.004, box = 0.15, tightness = 8)
 
 # labels to be plotted instead of points
 text <- gsub("\\\.", "\n", rownames(haspelmath))
@@ -116,8 +122,9 @@ text <- gsub("\\\.", "\n", rownames(haspelmath))
 # using a quick dummy function to set all parameters
 tmp <- function(columns) {
   lmap(p, haspelmath[,columns]
-    , levels = .20, labels = text
-    , density = .2, box = .2, lambda = .1, note = FALSE)
+    , levels = 0.1, labels = text
+    , density = 0.004, box = 0.15, tightness = 8
+    , lambda = 0.1, note = FALSE)
 }
 
 par(mfcol = c(2,3))
