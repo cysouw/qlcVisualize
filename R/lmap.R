@@ -7,12 +7,12 @@ lmap <- function( points, data
 						, col = "rainbow"
 						, add = FALSE
         # smoothing paramater for Krig
-            , lambda = NULL
+            , lambda = NA
         # parameters for legend
             , legend = TRUE
 						, position = "bottomleft"
-						, size = 0.7
-						, font = NULL
+						, cex.legend = 0.7
+						, font = ""
 						, note = TRUE
         # write to file
 						, file.out = NULL
@@ -129,7 +129,7 @@ lmap <- function( points, data
 
   # determine interpolation area
   # add zero coordinates to get nicer plotted areas
-  zeros <- boundary(points, show = FALSE, ...)
+  zeros <- boundary(points, plot = FALSE, ...)
 
 	# ========
 	# plotting
@@ -168,8 +168,6 @@ lmap <- function( points, data
 	  h0 <- rep.int(0, times = nrow(zeros))
 
 	  # make countours
-	  if (is.null(lambda)) { lambda  <- NA }
-
 	  kriging <- fields::Krig(x = rbind(points, zeros)
 	                  , Y = c(h, h0)
 	                  , give.warnings = FALSE
@@ -199,17 +197,17 @@ lmap <- function( points, data
 	    legend( position
 	            , pch = pch
 	            , legend = colnames(data)
-	            , cex = size
+	            , cex = cex.legend
 	            , col = col
 	    )
 	  } else {
 	    legend( position
 	            , fill = col
 	            , legend = colnames(data)
-	            , cex = size
+	            , cex = cex.legend
 	    )
 	  }
-	  par(family = NULL)
+	  par(family = "")
 	}
 
   # =====================
@@ -221,7 +219,7 @@ lmap <- function( points, data
                   , paste(100 * levels, collapse = "-")
                   , "%")
           , side = 1
-          , cex = size
+          , cex = cex.legend
           , col = "grey"
           )
   }
@@ -279,7 +277,7 @@ lmap <- function( points, data
           , col = bw
           , cex = cex
     )
-    par(family = NULL)
+    par(family = "")
 
   }
 
