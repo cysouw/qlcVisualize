@@ -11,8 +11,8 @@ Plotting a Voronoi-map ("v-map")
 A "voronoi-map" (voronoi-tesselation, also known as dirichlet tesselation) is used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tesselations. Also described here are a few helper functions to obtain geographical boundary, and to produce the tessalation.
 }
 \usage{
-vmap(tesselation, col = NULL, d = NULL, power = 0.5,
-  add = FALSE, border = "black", internal.border = "grey", lwd = 1)
+vmap(tesselation, col = NULL, d = NULL, add = FALSE,
+  border = "black", internal.border = "grey", lwd = 1, ...)
 
 voronoi(points, window)
 mapsToOwin(country, database = "worldHires")
@@ -27,9 +27,6 @@ Vector of colors for the filling of the tessalation. Is recycled when there are 
 }
   \item{d}{
 \code{\link{dist}} object specifying distances between points. When supplied, these distances are used to determine the colouring, following the idea by Heeringa (2004). Basically, the three first dimensions of a multidimensional scaling are mapped to the RGB-dimensions of color.
-  }
-  \item{power}{
-Factor used to influence the results of the multidimensional scaling. Values closer to one will lead to clearer separated colours, while higher values will lead to more gradual colours.
   }
   \item{add}{
 Add graphics to an existing plot
@@ -58,15 +55,20 @@ Database as used by \code{\link[maps]{map}}.
   \item{sub, level}{
 Names for Subdivisions of countries as available in the GADM database. Read the help file \code{\link[raster]{getData}} for more information about GADM, the subdivisions and how to acces them.
   }
+  \item{...}{
+Additional parameters passed to \code{\link{heeringa}}, influencing the coloring when \code{d} is specified.
+  }
 }
 \details{
 This code is almost completely based on functions from the \code{spatstat} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat}. Then a voronoi tessalation can be made (based on the function \code{\link[spatstat]{dirichlet}}, which in turn is based on \code{\link[deldir]{deldir}}). Finally, this tessalation can be plotted filled with different colours.
 
 Any legends have to be added manually by using \code{\link[graphics]{legend}}, see examples below.
+
+The function \code{voronoi} returns a warning when points are attested that lie outside of the specified border. For these points there is no polygon specified. Indices for the rejected points outside the border can be accessed by \code{attr(x, "rejects")}.
 }
 \value{
 \code{gadmToOwin} and \code{mapsToOwin} return an object of class \code{owin} from the package \code{spatstat}.
-\code{voronoi} returns a tesselation of the class \code{tess} from the package \code{spatstat}.
+\code{voronoi} returns a tesselation of the class \code{tess} from the package \code{spatstat}. When points outside of the border are attested, the indices of these points are added to an attribute "rejects".
 \code{vmap} plots a map.
 }
 \author{
@@ -115,6 +117,6 @@ legend("bottomright", legend = c("es mir", "mir es / other"),
 # Note that different methods to establish distances can lead to rather
 # different results! Also try method = "euclidean"
 d <- dist(hessen$data, method = "canberra")
-vmap(tessalation, d = d)
+vmap(tessalation, d = d, power = 0.5)
 
 }

@@ -51,7 +51,19 @@ gadmToOwin <- function(country, sub = NULL, level = 0) {
 # ====================
 
 voronoi <- function(points, window) {
-	spatstat::dirichlet(spatstat::ppp(points[,1],points[,2],window = window))
+
+  p <- spatstat::ppp(points[,1],points[,2],window = window)
+  v <- spatstat::dirichlet(p)
+
+  if (!is.null(attr(p, "rejects"))) {
+    rejected <- cbind(attr(p, "rejects")$x, attr(p, "rejects")$y)
+    index <- apply(rejected, 1, function(x) {
+                which(points[,1] == x[1] & points[,2] == x[2])
+             })
+    attr(v, "rejects") <- unlist(index)
+  }
+
+	return(v)
 }
 
 # ====================
@@ -59,7 +71,7 @@ voronoi <- function(points, window) {
 # default plotting of tessalations in spatstat is not easy to use with colour filling
 # ====================
 
-vmap <- function(tesselation, col = NULL, d = NULL, power = 0.5, add = FALSE, border = "black", internal.border = "grey", lwd = 1) {
+vmap <- function(tesselation, col = NULL, d = NULL, add = FALSE, border = "black", internal.border = "grey", lwd = 1, ...) {
 
 	if (!add) {
 		plot(0,0
@@ -80,13 +92,7 @@ vmap <- function(tesselation, col = NULL, d = NULL, power = 0.5, add = FALSE, bo
 	  col <- rep(col, times = ceiling(nr/length(col)))
 	} else {
 	  # Heeringa-style colouring of MDS dimensions turned RGB
-	  mds <- cmdscale(d, k=3)
-	  norm <- function(x){
-	    x <- abs(x)^power * sign(x)
-	    (x-min(x))/(max(x)-min(x))
-	  }
-	  mds <- apply(mds, 2, norm)
-	  col <- rgb(mds)
+    col <- heeringa(d, ...)
 	}
 
 	# plot all tiles individually, to allow for separate colors
@@ -102,7 +108,7 @@ vmap <- function(tesselation, col = NULL, d = NULL, power = 0.5, add = FALSE, bo
 	# add outer border
 	spatstat::plot.owin(tesselation$window
 						, add = TRUE
-						, border =  border
+						, border = border
 						, lwd = lwd
 						)
 }
