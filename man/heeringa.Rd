@@ -4,7 +4,7 @@
 Heeringa-style colours
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Proposed in Heeringa (2004) to colour a (dis)similarity by decomposing it into three dimensions (using \code{cmdscale} here) and then mapping these dimensions to RGB to make colours. Hihgly useful to visualize pairwise similarities between geographic regions.
 }
 \usage{
 heeringa(dist, power = 0.5, mapping = c(1, 2, 3))
@@ -39,6 +39,9 @@ tessalation <- voronoi(hessen$villages, hessen$boundary)
 d <- dist(hessen$data, method = "canberra")
 
 # different mappings of the colors
-vmap(tessalation, d = d, power = 0.5)
-vmap(tessalation, d = d, mapping = c(3, -2, 1))
+c1 <- heeringa(d)
+vmap(tessalation, col = c1)
+
+c2 <- heeringa(d, power = 1, mapping = c(3, -2, 1))
+vmap(tessalation, col = c2)
 }

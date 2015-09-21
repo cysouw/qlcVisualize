@@ -1,51 +1,4 @@
 # ====================
-# turn polygons from "maps" into window for spatstat
-# ====================
-
-mapsToOwin <- function(country, database = "worldHires") {
-
-  require(mapdata)
-	raw <- maps::map(database = database
-					, regions = country
-					, plot = FALSE
-					, fill = TRUE
-					)
-
-	cutoff <- which(is.na(raw$x))
-	cutoff <- c( 0, cutoff, length(raw$x)+1 )
-
-	coor <- cbind(raw$x, raw$y)
-
-	result <- list()
-	for (i in 1:length(raw$names)) {
-		result[[i]] <-  coor[(cutoff[i]+1) : (cutoff[i+1]-1), ]
-	}
-	names(result) <- raw$names
-
-	return( spatstat::owin(poly = result) )
-}
-
-# ====================
-# turn data from GADM into windows for spatstat
-# ====================
-
-gadmToOwin <- function(country, sub = NULL, level = 0) {
-
-	raw <- raster::getData("GADM", country = country, level = level)
-
-	if (!is.null(sub)) {
-		name_objects <- which(grepl("^NAME_", names(raw@data)))
-		selection <- sapply(raw@data[name_objects], function(x) {
-			which(grepl(sub,x))
-			})
-		raw <- raw[unlist(selection),]
-	}
-
-	return( maptools::as.owin.SpatialPolygons(raw) )
-
-}
-
-# ====================
 # make a dirichlet/voronoi tessalation of points in a window
 # this is just a convenience wrapper around "dirichlet" from spatstat
 # ====================
@@ -71,7 +24,7 @@ voronoi <- function(points, window) {
 # default plotting of tessalations in spatstat is not easy to use with colour filling
 # ====================
 
-vmap <- function(tesselation, col = NULL, d = NULL, add = FALSE, border = "black", internal.border = "grey", lwd = 1, ...) {
+vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", internal.border = "grey", lwd = 1) {
 
 	if (!add) {
 		plot(0,0
@@ -86,14 +39,8 @@ vmap <- function(tesselation, col = NULL, d = NULL, add = FALSE, border = "black
 	tiles <- spatstat::tiles(tesselation)
 	nr <- length(tiles)
 
-	# determine colors
-	if (is.null(d)) {
-	  # repeat if necesary
-	  col <- rep(col, times = ceiling(nr/length(col)))
-	} else {
-	  # Heeringa-style colouring of MDS dimensions turned RGB
-    col <- heeringa(d, ...)
-	}
+	# repeat colors if necessary
+	col <- rep(col, times = ceiling(nr/length(col)))
 
 	# plot all tiles individually, to allow for separate colors
 	for (i in 1:nr) {
