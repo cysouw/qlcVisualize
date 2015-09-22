@@ -4,50 +4,36 @@
 Turning ahull into spatialPolygon
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Internal helper function
 }
 \usage{
 ah2sp(x, increment = 360, rnd = 10, proj4string = sp::CRS(as.character(NA)))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-%%     ~~Describe \code{x} here~~
+ahull
 }
   \item{increment}{
-%%     ~~Describe \code{increment} here~~
+internal parameter
 }
   \item{rnd}{
-%%     ~~Describe \code{rnd} here~~
+internal parameter
 }
   \item{proj4string}{
-%%     ~~Describe \code{proj4string} here~~
+projection
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+ahull gives line segments, these are turned into a polygon, and then turned into an "owin" object
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+Object of class "owin"
 }
 \author{
-%%  ~~who you are~~
+Andrew Bevan, based on code from Dylan Beaudette, see \url{https://stat.ethz.ch/pipermail/r-sig-geo/2012-March/014409.html}.
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Used in \link{hullToOwin}
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----
