@@ -10,7 +10,7 @@ A "voronoi-map" (voronoi-tesselation, also known as dirichlet tesselation) is us
 }
 \usage{
 vmap(tesselation, col = NULL, add = FALSE,
-  border = "black", internal.border = "grey", lwd = 1)
+  outer.border = "black", border = "grey", ...)
 
 voronoi(points, window)
 }
@@ -24,14 +24,17 @@ Vector of colors for the filling of the tessalation. Is recycled when there are 
   \item{add}{
 Add graphics to an existing plot
 }
-  \item{border}{
+  \item{outer.border}{
 Colour of the outer border. Specifying \code{NA} removes the border.
 }
-  \item{internal.border}{
+  \item{border}{
 Colour of the inner borders. Specifying \code{NA} removes all borders.
 }
   \item{lwd}{
-Line width of all borders
+Line width of borders.
+  }
+  \item{...}{
+Further arguments passed to \link{polygon}.
 }
   \item{points}{
 Two-column matrix with all coordinates of the points to make a voronoi tessalation.
@@ -55,11 +58,6 @@ The function \code{voronoi} returns a warning when points are attested that lie 
 Michael Cysouw <cysouw@mac.com>
 }
 \examples{
-data(hessen)
-plot(hessen$boundary)
-
-
-
 # make a voronoi tessalation for some villages in hessen
 data(hessen)
 plot(hessen$boundary)
@@ -69,7 +67,7 @@ tessalation <- voronoi(hessen$villages, hessen$boundary)
 plot(tessalation)
 
 # make a resizable plot with random colour specification
-vmap(tessalation, col = rainbow(5), i = NA)
+vmap(tessalation, col = rainbow(5), border = NA)
 legend("bottomright", legend = c("a","b","c","d","e"), fill = rainbow(5))
 
 # use actual colors from data, using first feature from supplied data

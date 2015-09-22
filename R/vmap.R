@@ -24,7 +24,7 @@ voronoi <- function(points, window) {
 # default plotting of tessalations in spatstat is not easy to use with colour filling
 # ====================
 
-vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", internal.border = "grey", lwd = 1) {
+vmap <- function(tesselation, col = NULL, add = FALSE, outer.border = "black", border = "grey", lwd = 1, ...) {
 
 	if (!add) {
 		plot(0,0
@@ -37,25 +37,33 @@ vmap <- function(tesselation, col = NULL, add = FALSE, border = "black", interna
 	}
 
 	tiles <- spatstat::tiles(tesselation)
-	nr <- length(tiles)
 
 	# repeat colors if necessary
-	col <- rep(col, times = ceiling(nr/length(col)))
+	col <- rep(col, times = ceiling(length(tiles)/length(col)))
 
 	# plot all tiles individually, to allow for separate colors
-	for (i in 1:nr) {
-		spatstat::plot.owin(tiles[[i]]
-							, add = TRUE
-							, col = col[i]
-							, border = internal.border
-							, lwd = lwd
-							)
+	# vectorize the plotting using polygon()
+
+	poly <- function(tile) {
+	  coor <- cbind( x = tile$bdry[[1]]$x, y = tile$bdry[[1]]$y )
+	  return( rbind(coor, c(NA, NA)))
 	}
+
+	coor <- sapply(tiles, poly)
+	coor <- do.call(rbind,coor)
+	coor <- head(coor, -1)
+
+	polygon(coor
+	        , col = col
+	        , border = border
+	        , lwd = lwd
+	        , ...
+	        )
 
 	# add outer border
 	spatstat::plot.owin(tesselation$window
 						, add = TRUE
-						, border = border
+						, border = outer.border
 						, lwd = lwd
 						)
 }
