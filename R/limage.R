@@ -184,9 +184,15 @@ limage <- function( x
 
 	par(op)
 
-	# === return ordering when asked ===
+	# === return ordering invisibly ===
+
+	return(invisible(list(rows = order.rows, cols = order.cols)))
 
   } else {
+
+  # === only return ordering ===
+
     return(list(rows = order.rows, cols = order.cols))
+
   }
 }
