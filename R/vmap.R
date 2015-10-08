@@ -45,16 +45,21 @@ vmap <- function(tesselation, col = NULL, add = FALSE, outer.border = "black", b
 	# vectorize the plotting using polygon()
 
 	poly <- function(tile) {
-	  coor <- cbind( x = tile$bdry[[1]]$x, y = tile$bdry[[1]]$y )
-	  return( rbind(coor, c(NA, NA)))
+	  parts <- sapply(tile$bdry, function(poly) {
+	              coor <- cbind( x = poly$x, y = poly$y)
+	              rbind(coor, c(NA, NA))
+	               }, simplify = FALSE)
+	  do.call(rbind, parts)
 	}
 
 	coor <- sapply(tiles, poly)
-	coor <- do.call(rbind,coor)
+	coor <- do.call(rbind, coor)
 	coor <- head(coor, -1)
 
+	nr_polys <- sapply(tiles, function(tile){ length(tile$bdry) } )
+
 	polygon(coor
-	        , col = col
+	        , col = rep(col, times = nr_polys)
 	        , border = border
 	        , lwd = lwd
 	        , ...
