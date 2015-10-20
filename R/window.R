@@ -4,7 +4,7 @@
 
 mapsToOwin <- function(country, database = "worldHires") {
 
-  require(mapdata)
+  requireNamespace("mapdata")
   raw <- maps::map(database = database
                    , regions = country
                    , plot = FALSE

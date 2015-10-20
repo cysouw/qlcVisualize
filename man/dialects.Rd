@@ -21,7 +21,7 @@ Excerpt from \url{http://github.com/cysouw/PAD/}
 \examples{
 data(dialects)
 
-library(mapdata)
+require(mapdata)
 map("worldHires", "Germany", fill = TRUE, col = "grey90")
 
 lmap(dialects$villages, dialects$data[,21]

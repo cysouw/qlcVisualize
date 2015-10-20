@@ -97,7 +97,7 @@ lmap(hessen$villages, f4, draw = 3, cex = 0.8
 
 # another isogloss example:
 # "f" sounds in German dialects in the words "Kochlöffel"
-library(mapdata)
+require(mapdata)
 map("worldHires", "Germany", fill = TRUE, col = "grey90")
 
 data(dialects)
