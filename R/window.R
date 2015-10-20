@@ -61,7 +61,7 @@ hullToOwin <- function(points, shift, alpha) {
 
   # turn this into a "owin" window
 
-  hull <- ah2sp(hull)
+  hull <- .ah2sp(hull)
   hull <- maptools::as.owin.SpatialPolygons(hull)
 
   return(hull)
@@ -72,7 +72,7 @@ hullToOwin <- function(points, shift, alpha) {
 # https://stat.ethz.ch/pipermail/r-sig-geo/2012-March/014409.html
 # =========================
 
-ah2sp <- function(x
+.ah2sp <- function(x
                   , increment = 360
                   , rnd = 10
                   , proj4string = sp::CRS(as.character(NA))
