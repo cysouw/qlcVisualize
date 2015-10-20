@@ -1,5 +1,5 @@
 # ====================
-# make a dirichlet/voronoi tessalation of points in a window
+# make a dirichlet/voronoi tessellation of points in a window
 # this is just a convenience wrapper around "dirichlet" from spatstat
 # ====================
 
@@ -21,25 +21,25 @@ voronoi <- function(points, window) {
 
 # ====================
 # plotting of a voronoi-map (v-map)
-# default plotting of tessalations in spatstat is not easy to use with colour filling
+# default plotting of tessellations in spatstat is not easy to use with colour filling
 # ====================
 
-vmap <- function(tesselation, col = NULL, add = FALSE, outer.border = "black", border = "grey", lwd = 1, ...) {
+vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", border = "grey", lwd = 1, ...) {
 
 	if (!add) {
 		plot(0,0
-			, xlim = tesselation$window$xrange
-			, ylim = tesselation$window$yrange
+			, xlim = tessellation$window$xrange
+			, ylim = tessellation$window$yrange
 			, type = "n"
 			, axes = FALSE
 			, ann = FALSE
 		)
 	}
 
-	tiles <- spatstat::tiles(tesselation)
+	tiles <- spatstat::tiles(tessellation)
 
 	# repeat colors if necessary
-	col <- rep(col, times = ceiling(length(tiles)/length(col)))
+	col <- rep(col, length.out = length(tiles))
 
 	# plot all tiles individually, to allow for separate colors
 	# vectorize the plotting using polygon()
@@ -66,7 +66,7 @@ vmap <- function(tesselation, col = NULL, add = FALSE, outer.border = "black", b
 	        )
 
 	# add outer border
-	spatstat::plot.owin(tesselation$window
+	spatstat::plot.owin(tessellation$window
 						, add = TRUE
 						, border = outer.border
 						, lwd = lwd
