@@ -6,8 +6,6 @@ Date: 2015-10-20
 Author: Michael Cysouw
 Maintainer: Michael Cysouw <cysouw@mac.com>
 Description: Collection of visualizations as used in quantitative language comparison.
-License: GPL-3 | file LICENSE
+License: ACM | file LICENSE
 Encoding: UTF-8
-Imports: fields, MASS, qlcMatrix, seriation, spatstat, raster, maps, mapdata, maptools, mapplots, sp, alphahull
-Suggests: knitr
-VignetteBuilder: knitr
+Imports: fields, MASS, qlcMatrix, seriation, spatstat, raster, maps, mapdata, maptools, mapplots, methods, sp, alphahull
