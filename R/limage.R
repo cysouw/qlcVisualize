@@ -19,46 +19,55 @@ limage <- function( x
   order.cols <- 1:ncol(x)
 
   if (!is.null(order)) {
-    sim.cols <- as.matrix(qlcMatrix::sim.obs(t(x), method = method))
-    sim.rows <- as.matrix(qlcMatrix::sim.obs(x, method = method))
+    if(nrow(x) > 1 & ncol(x) > 1) {
+      sim.cols <- as.matrix(qlcMatrix::sim.obs(t(x), method = method))
+      sim.rows <- as.matrix(qlcMatrix::sim.obs(x, method = method))
 
-    if (order == "pca") {
+      if (order == "pca") {
 
-      # PCA on similarities (aka "correspondence analysis")
-      # use second dimension for ordering
-      order.cols <- order(prcomp(sim.cols)$x[,2])
-      order.rows <- order(prcomp(sim.rows)$x[,2])
+        # PCA on similarities (aka "correspondence analysis")
+        # use second dimension for ordering
+        order.cols <- order(prcomp(sim.cols)$x[,2])
+        order.rows <- order(prcomp(sim.rows)$x[,2])
 
-    } else if (order == "varimax") {
+      } else if (order == "varimax") {
 
-      # varimax rotations on PCA for ordering of correspondences
-      # use second dimension
-      order.cols <- order(varimax(prcomp(sim.cols)$x)$loadings[,2])
-      order.rows <- order(varimax(prcomp(sim.rows)$x)$loadings[,2])
+        # varimax rotations on PCA for ordering of correspondences
+        # use second dimension
+        order.cols <- order(varimax(prcomp(sim.cols)$x)$loadings[,2])
+        order.rows <- order(varimax(prcomp(sim.rows)$x)$loadings[,2])
 
-    } else if (order == "mds") {
+      } else if (order == "mds") {
 
-      # classic MDS
-      # use first dimension for ordering
-      order.cols <- order(cmdscale(max(sim.cols)-sim.cols)[,1])
-      order.rows <- order(cmdscale(max(sim.rows)-sim.rows)[,1])
+        # classic MDS
+        # use first dimension for ordering
+        order.cols <- order(cmdscale(max(sim.cols)-sim.cols)[,1])
+        order.rows <- order(cmdscale(max(sim.rows)-sim.rows)[,1])
 
+      } else {
+
+        # use library seriation for ordering
+        # option "R2E" works nice for getting groups of data
+        order.cols <- seriation::get_order(seriation::seriate(
+                                as.dist(max(sim.cols)-sim.cols)
+                                , method = order
+                                , control =  control
+                              ))
+        order.rows <- seriation::get_order(seriation::seriate(
+                                as.dist(max(sim.rows)-sim.rows)
+                                , method = order
+                                , control = control
+                              ))
+      }
     } else {
-
-      # use library seriation for ordering
-      # option "R2E" works nice for getting groups of data
-      order.cols <- seriation::get_order(seriation::seriate(
-                              as.dist(max(sim.cols)-sim.cols)
-                              , method = order
-                              , control =  control
-                            ))
-      order.rows <- seriation::get_order(seriation::seriate(
-                              as.dist(max(sim.rows)-sim.rows)
-                              , method = order
-                              , control = control
-                            ))
+      if (nrow(x) == 1) {
+        order.cols <- order(x[1,])
+      }
+      if (ncol(x) == 1) {
+        order.rows <- order(x[,1])
+      }
     }
-    x <- x[order.rows, order.cols]
+    x <- x[order.rows, order.cols, drop = FALSE]
   }
 
   if (plot) {
@@ -67,8 +76,8 @@ limage <- function( x
 
 	plot.new()
   op <- par(family = font, mar = c(5,4,4,4) + 0.1)
-	plot.window(xlim=c(0,dim(x)[1])
-			       , ylim=c(0,dim(x)[2])
+	plot.window(xlim = c(0, dim(x)[1])
+			       , ylim = c(0, dim(x)[2])
 			       , asp = asp
 			      	)
 
