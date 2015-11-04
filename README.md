@@ -1,5 +1,6 @@
 ![version](http://www.r-pkg.org/badges/version/qlcVisualize)
 ![downloads](http://cranlogs.r-pkg.org/badges/qlcVisualize)
+[![DOI](https://zenodo.org/badge/19068/cysouw/qlcVisualize.svg)](https://zenodo.org/badge/latestdoi/19068/cysouw/qlcVisualize)
 
 qlcVisualize
 ============
