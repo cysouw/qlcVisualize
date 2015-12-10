@@ -57,6 +57,8 @@ hullToOwin <- function(points, shift, alpha) {
                 , t(t(points) + c(-shift, shift))
   )
 
+  p <- sapply(p, jitter, factor = 1)
+
   hull <- alphahull::ahull(p, alpha =  alpha)
 
   # turn this into a "owin" window
@@ -74,7 +76,7 @@ hullToOwin <- function(points, shift, alpha) {
 
 .ah2sp <- function(x
                   , increment = 360
-                  , rnd = 10
+                  , rnd = 5
                   , proj4string = sp::CRS(as.character(NA))
                   ) {
 
