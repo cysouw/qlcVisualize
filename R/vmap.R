@@ -39,17 +39,24 @@ vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", 
 	tiles <- spatstat::tiles(tessellation)
 
 	# repeat colors if necessary
-	col <- rep(col, length.out = length(tiles))
+	cols <- rep(col, length.out = length(tiles))
 
 	# plot all tiles individually, to allow for separate colors
 	# vectorize the plotting using polygon()
 
 	poly <- function(tile) {
-	  parts <- sapply(tile$bdry, function(poly) {
-	              coor <- cbind( x = poly$x, y = poly$y)
-	              rbind(coor, c(NA, NA))
-	               }, simplify = FALSE)
-	  do.call(rbind, parts)
+	  if (tile$type == "rectangle") {
+	    x <- tile$xrange
+	    y <- tile$yrange
+	    coor <- cbind( x = c(x, rev(x)), y = rep(y, each = 2))
+	    return(rbind(coor, c(NA, NA)))
+	  } else {
+  	  parts <- sapply(tile$bdry, function(poly) {
+  	              coor <- cbind( x = poly$x, y = poly$y)
+  	              rbind(coor, c(NA, NA))
+  	               }, simplify = FALSE)
+  	  return(do.call(rbind, parts))
+	  }
 	}
 
 	coor <- sapply(tiles, poly)
@@ -57,9 +64,11 @@ vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", 
 	coor <- head(coor, -1)
 
 	nr_polys <- sapply(tiles, function(tile){ length(tile$bdry) } )
+  nr_rect <- sapply(tiles, function(tile){ tile$type=="rectangle" } )
+  nr <- nr_polys + nr_rect
 
 	polygon(coor
-	        , col = rep(col, times = nr_polys)
+	        , col = rep(cols, times = nr)
 	        , border = border
 	        , lwd = lwd
 	        , ...
