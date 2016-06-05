@@ -1,5 +1,6 @@
 # qlcData 0.2
 
+* reorder plotting in lmap
 * allow for single row or column in limage
 * bigfixes in vmap and hullToOwin
 
