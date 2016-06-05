@@ -239,19 +239,19 @@ lmap <- function( points, data
           )
 
     if (single.valued.data) {
-      # plotting symbols if maximally one symbol per point
+      # plotting symbols if maximally one symbol per point, others first
+      if (ncol(data)>length(selection)) {
+        points( points[data[,length(selection)+1] > 0, , drop = FALSE]
+                , pch = 0
+                , cex = cex
+                , col = col[length(selection)+1])
+      }
       for (i in 1:length(selection)) {
         points( points[data[,i] > 0, , drop = FALSE]
                 , pch = i
                 , cex = cex
                 , col = col[i]
                )
-      }
-      if (ncol(data)>length(selection)) {
-        points( points[data[,length(selection)+1] > 0, , drop = FALSE]
-                , pch = 0
-                , cex = cex
-                , col = col[length(selection)+1])
       }
     } else {
       # otherwise plot pies. This implementation is slow!!!
