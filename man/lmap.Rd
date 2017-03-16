@@ -14,8 +14,8 @@ Isoglosses show lines surrounding similar phenomena in space. Instead of drawing
 \usage{
 lmap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
-   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE, lambda = NA,
-   legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
+   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE, ignore.others = FALSE,
+   lambda = NA, legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
    note = TRUE, file.out = NULL, ...)
 }
 \arguments{
@@ -45,6 +45,9 @@ lmap(points, data,
 }
   \item{add}{
   Logical: should the plot be added to an exitings plot or not?
+  }
+  \item{add}{
+  Logical: ignore all other categories, not selected through \code{draw}.
   }
   \item{lambda}{
   Parameter for the interpolation, passed internally to the function \link[fields]{Krig}. Low values result in more detailed boundaries around the measured points.

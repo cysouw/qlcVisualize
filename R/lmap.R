@@ -6,6 +6,7 @@ lmap <- function( points, data
             , cex = 0.7
 						, col = "rainbow"
 						, add = FALSE
+						, ignore.others = FALSE
         # smoothing paramater for Krig
             , lambda = NA
         # parameters for legend
@@ -50,14 +51,6 @@ lmap <- function( points, data
   ignore <- rowSums(data, na.rm = TRUE) == 0
   empty.points.present <- sum(ignore) > 0
 
-  # normalize between 0 and 1: each point (row) adds up to 1
-  sums <- rowSums(data, na.rm = TRUE)
-  sums[sums == 0] <- 1
-  data <- data/sums
-
-  # check for multi-valued data
-  single.valued.data <- sum(data[data != 1 & data != 0], na.rm = TRUE) == 0
-
   # =================================
   # which words to include in graphic
   # =================================
@@ -84,6 +77,23 @@ lmap <- function( points, data
   } else {
     data <- data[ , selection, drop = FALSE]
   }
+
+  # optionally ignore all others
+  if (ignore.others) {
+    data <- data[, -which(colnames(data) == "other"), drop = FALSE]
+  }
+
+  # ==============
+  # normalize data
+  # ==============
+
+  # normalize between 0 and 1: each point (row) adds up to 1
+  sums <- rowSums(data, na.rm = TRUE)
+  sums[sums == 0] <- 1
+  data <- data/sums
+
+  # check whether there is multi-valued data
+  single.valued.data <- sum(data[data != 1 & data != 0], na.rm = TRUE) == 0
 
   # ===========
   # set colours
