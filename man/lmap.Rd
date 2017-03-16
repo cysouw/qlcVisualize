@@ -15,7 +15,7 @@ Isoglosses show lines surrounding similar phenomena in space. Instead of drawing
 lmap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
    labels = NULL, cex = 0.7, col = "rainbow", add = FALSE,
-   ignore.others = FALSE, , normalize.frequency = TRUE, scale.pies = TRUE
+   ignore.others = FALSE, , normalize.frequency = FALSE, scale.pies = FALSE
    lambda = NA, legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
    note = TRUE, file.out = NULL, ...)
 }

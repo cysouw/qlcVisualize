@@ -62,7 +62,7 @@ lmap <- function( points, data
     # only most frequent levels are included
     freq <- colSums(data, na.rm = TRUE)
     ordered <- order(freq, decreasing = TRUE, na.last = NA)
-    selection <- na.omit(ordered[1:draw])
+    selection <- na.omit(ordered[1:min(draw, ncol(data))])
   } else if (is.numeric(draw)) {
     # use numbers as column-numbers
     selection <- draw
@@ -82,7 +82,7 @@ lmap <- function( points, data
   }
 
   # optionally ignore all others
-  if (ignore.others) {
+  if (ignore.others & others.present) {
     data <- data[, -which(colnames(data) == "other"), drop = FALSE]
   }
 
