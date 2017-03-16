@@ -6,7 +6,10 @@ lmap <- function( points, data
             , cex = 0.7
 						, col = "rainbow"
 						, add = FALSE
+				# data handling
 						, ignore.others = FALSE
+				    , normalize.frequency = FALSE
+				    , scale.pies = TRUE
         # smoothing paramater for Krig
             , lambda = NA
         # parameters for legend
@@ -83,17 +86,8 @@ lmap <- function( points, data
     data <- data[, -which(colnames(data) == "other"), drop = FALSE]
   }
 
-  # ==============
-  # normalize data
-  # ==============
-
-  # normalize between 0 and 1: each point (row) adds up to 1
-  sums <- rowSums(data, na.rm = TRUE)
-  sums[sums == 0] <- 1
-  data <- data/sums
-
   # check whether there is multi-valued data
-  single.valued.data <- sum(data[data != 1 & data != 0], na.rm = TRUE) == 0
+  single.valued.data <- sum(apply(data,1,function(x){sum(x>0)>1}), na.rm = TRUE) == 0
 
   # ===========
   # set colours
@@ -171,10 +165,20 @@ lmap <- function( points, data
   # using package "fields"
 	# =============
 
+  # for data representing relative frequencies
+  # normalize heights between 0 and 1: each point (row) adds up to 1
+  if (normalize.frequency) {
+    sums <- rowSums(data, na.rm = TRUE)
+    sums[sums == 0] <- 1
+    heights <- data/sums
+  } else {
+    heights <- data
+  }
+
 	for (i in 1:length(selection)) {
 
 	  # determine height
-	  h <- data[,i]
+	  h <- heights[,i]
 	  h0 <- rep.int(0, times = nrow(zeros))
 
 	  # make countours
@@ -269,6 +273,7 @@ lmap <- function( points, data
                           , y = points[!ignore,2]
                           , z = data[!ignore,]
                           , radius = cex/20
+                          , scale = scale.pies
                           , col = col
                           )
     }
