@@ -14,7 +14,8 @@ Isoglosses show lines surrounding similar phenomena in space. Instead of drawing
 \usage{
 lmap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
-   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE, ignore.others = FALSE,
+   labels = NULL, cex = 0.7, col = "rainbow", add = FALSE,
+   ignore.others = FALSE, , normalize.frequency = TRUE, scale.pies = TRUE
    lambda = NA, legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
    note = TRUE, file.out = NULL, ...)
 }
@@ -45,11 +46,17 @@ lmap(points, data,
 }
   \item{add}{
   Logical: should the plot be added to an exitings plot or not?
-  }
-  \item{add}{
+}
+  \item{ignore.others}{
   Logical: ignore all other categories, not selected through \code{draw}.
-  }
-  \item{lambda}{
+}
+  \item{normalize.frequency}{
+  Logical: should rows of data (points in the plot) be normalized to 1? Usefull only for data that represent frequency of occurence as columns. Note that setting this to \code{FALSE} influences the behaviour of \code{levels}.
+}
+\item{scale.pies}{
+  logical: for multivalued data: should the size of the pies represent frequencies (\code{TRUE}) or all be of the same size (\code{FALSE}, by default)?
+}
+\item{lambda}{
   Parameter for the interpolation, passed internally to the function \link[fields]{Krig}. Low values result in more detailed boundaries around the measured points.
 }
   \item{legend}{
@@ -95,8 +102,8 @@ boundary(hessen$villages, density = 0.1, grid = 10)
 
 # useful size of pies has to be determined by changing cex
 plot(hessen$boundary, main = NULL)
-lmap(hessen$villages, f4, draw = 3, cex = 0.8
-  , density = 0.1, grid = 10, add = TRUE, cex.legend = 0.5)
+lmap(hessen$villages, f4, draw = 3, cex = 0.8, normalize.frequency = TRUE
+  , density = 0.1, grid = 10, add = TRUE, cex.legend = 0.5, scale.pies = TRUE)
 
 # another isogloss example:
 # "f" sounds in German dialects in the words "Kochlöffel"
