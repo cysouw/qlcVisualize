@@ -280,6 +280,10 @@ lmap <- function( points, data
   } else {
     # plot labels
 
+    if (length(labels) == 1) {
+      labels <- rep(labels, times = nrow(points))
+    }
+
     if (length(labels) != nrow(points)) {
       stop("Number of labels is not equal to the number of points")
     }

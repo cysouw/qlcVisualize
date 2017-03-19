@@ -36,7 +36,7 @@ lmap(points, data,
   height of contours to be drawn. Internally, all values are normalized between zero and one, so only values between those extremes are sensible. Line thickness is automatically balanced.
 }
   \item{labels}{
-  Optionally, labels for the points to be drawn instead of symbols in the plot.
+  Optionally, character vector with labels for the points, to be drawn instead of symbols in the plot. Should be a vector of the same length as the number of points. Alternatively, a single character-string is repeated for all points.
 }
   \item{cex}{
   Character expansion of the labels (see previous option). Also influences the size of symbols or pie-charts.
