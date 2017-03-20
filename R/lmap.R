@@ -263,9 +263,9 @@ lmap <- function( points, data
         # only make pies for multivalued
         sel <- !ignore & multi.valued
       }
-      mapplots::draw.pie( x = points[sel,1]
-                          , y = points[sel,2]
-                          , z = data[sel,]
+      mapplots::draw.pie( x = points[sel,1, drop = FALSE]
+                          , y = points[sel,2, drop = FALSE]
+                          , z = data[sel,,drop = FALSE]
                           , radius = cex/20
                           , scale = scale.pies
                           , col = col
@@ -277,13 +277,13 @@ lmap <- function( points, data
     # only when not all pies!
     if (!scale.pies) {
       if (ncol(data)>length(selection)) {
-        points( points[data[!multi.valued, length(selection)+1] > 0, , drop = FALSE]
+        points( points[data[, length(selection)+1] > 0 & !multi.valued, , drop = FALSE]
                 , pch = 0
                 , cex = cex
                 , col = col[length(selection)+1])
       }
       for (i in 1:length(selection)) {
-        points( points[data[!multi.valued, i] > 0, , drop = FALSE]
+        points( points[data[, i] > 0 & !multi.valued, , drop = FALSE]
                 , pch = i
                 , cex = cex
                 , col = col[i]
