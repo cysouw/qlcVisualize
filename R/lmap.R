@@ -87,7 +87,8 @@ lmap <- function( points, data
   }
 
   # check whether there is multi-valued data
-  single.valued.data <- sum(apply(data,1,function(x){sum(x>0)>1}), na.rm = TRUE) == 0
+  multi.valued <- apply(data,1,function(x){sum(x>0)>1})
+  single.valued.data <- sum(multi.valued, na.rm = TRUE) == 0
 
   # ===========
   # set colours
@@ -252,30 +253,42 @@ lmap <- function( points, data
             , cex = cex
           )
 
-    if (single.valued.data) {
-      # plotting symbols if maximally one symbol per point, others first
+    if (!single.valued.data) {
+
+      # plot pies for multi-valued points. This implementation is slow!!!
+      if (scale.pies) {
+        # make all pieas
+        sel <- !ignore
+      } else {
+        # only make pies for multivalued
+        sel <- !ignore & multi.valued
+      }
+      mapplots::draw.pie( x = points[sel,1]
+                          , y = points[sel,2]
+                          , z = data[sel,]
+                          , radius = cex/20
+                          , scale = scale.pies
+                          , col = col
+      )
+
+    }
+
+    # plotting symbols if maximally one symbol per point, others first
+    # only when not all pies!
+    if (!scale.pies) {
       if (ncol(data)>length(selection)) {
-        points( points[data[,length(selection)+1] > 0, , drop = FALSE]
+        points( points[data[!multi.valued, length(selection)+1] > 0, , drop = FALSE]
                 , pch = 0
                 , cex = cex
                 , col = col[length(selection)+1])
       }
       for (i in 1:length(selection)) {
-        points( points[data[,i] > 0, , drop = FALSE]
+        points( points[data[!multi.valued, i] > 0, , drop = FALSE]
                 , pch = i
                 , cex = cex
                 , col = col[i]
                )
       }
-    } else {
-      # otherwise plot pies. This implementation is slow!!!
-      mapplots::draw.pie( x = points[!ignore,1]
-                          , y = points[!ignore,2]
-                          , z = data[!ignore,]
-                          , radius = cex/20
-                          , scale = scale.pies
-                          , col = col
-                          )
     }
   } else {
     # plot labels
