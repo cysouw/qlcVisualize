@@ -204,7 +204,7 @@ lmap <- function( points, data
 
 	if (legend) {
 	  par(family = font)
-	  if (single.valued.data & is.null(labels)) {
+	  if (sum(!multi.valued) > 0 & is.null(labels)) {
 
 	    pch <- 1:length(selection)
 	    if (others.present) { pch <- c(pch, 0) }
