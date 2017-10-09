@@ -3,7 +3,7 @@
 # mapping dimensions of MDS onto RG
 # ========
 
-heeringa <- function(dist, power = 0.5, mapping = c(1,2,3) ) {
+heeringa <- function(dist, power = 0.5, mapping = c(1,2,3), method = "eigs" ) {
 
   # check mapping
   if (length(mapping) != 3
@@ -12,7 +12,14 @@ heeringa <- function(dist, power = 0.5, mapping = c(1,2,3) ) {
     stop("mapping is not correct")
   }
 
-  mds <- cmdscale(dist, k = 3)
+  if (method == "mds") {
+    mds <- cmdscale(dist, k = 3)
+  } else if (method == "eigs") {
+    e <- RSpectra::eigs(max(dist)-dist, 4)
+    d <- diag(e$values[2:4])^0.5
+    mds <- e$vectors[,2:4] %*% d
+  }
+
   norm <- function(x){
     x <- abs(x)^power * sign(x)
     (x-min(x))/(max(x)-min(x))
