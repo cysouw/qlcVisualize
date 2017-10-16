@@ -12,6 +12,11 @@ heeringa <- function(dist, power = 0.5, mapping = c(1,2,3), method = "eigs" ) {
     stop("mapping is not correct")
   }
 
+  # check format of dist
+  if (class(dist) == "dist") {
+    dist <- as.matrix(dist)
+  }
+
   if (method == "mds") {
     mds <- cmdscale(dist, k = 3)
   } else if (method == "eigs") {
