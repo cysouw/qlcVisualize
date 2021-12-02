@@ -1,5 +1,5 @@
 exportPattern("^[[:alpha:]]+")
-importFrom("spatstat.geom","dirichlet","plot.owin","as.owin","owin","ppp")
+importFrom("spatstat.geom","dirichlet","plot.owin","as.owin","owin","ppp","tiles")
 importFrom("raster","getData")
 importFrom("fields","Krig","predictSurface")
 importFrom("mapplots","draw.pie")

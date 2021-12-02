@@ -22,7 +22,7 @@ mapsToOwin <- function(country, database = "worldHires") {
   }
   names(result) <- raw$names
 
-  return( spatstat::owin(poly = result) )
+  return( spatstat.geom::owin(poly = result) )
 }
 
 # ====================

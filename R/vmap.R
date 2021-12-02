@@ -5,8 +5,8 @@
 
 voronoi <- function(points, window) {
 
-  p <- spatstat::ppp(points[,1],points[,2],window = window)
-  v <- spatstat::dirichlet(p)
+  p <- spatstat.geom::ppp(points[,1],points[,2],window = window)
+  v <- spatstat.geom::dirichlet(p)
 
   if (!is.null(attr(p, "rejects"))) {
     rejected <- cbind(attr(p, "rejects")$x, attr(p, "rejects")$y)
@@ -36,7 +36,7 @@ vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", 
 		)
 	}
 
-	tiles <- spatstat::tiles(tessellation)
+	tiles <- spatstat.geom::tiles(tessellation)
 
 	# repeat colors if necessary
 	cols <- rep(col, length.out = length(tiles))
@@ -75,7 +75,7 @@ vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", 
 	        )
 
 	# add outer border
-	spatstat::plot.owin(tessellation$window
+	spatstat.geom::plot.owin(tessellation$window
 						, add = TRUE
 						, border = outer.border
 						, lwd = lwd
