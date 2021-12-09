@@ -39,7 +39,11 @@ vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", 
 	tiles <- spatstat.geom::tiles(tessellation)
 
 	# repeat colors if necessary
-	cols <- rep(col, length.out = length(tiles))
+	if (is.null(col)) {
+	  cols <- col
+	} else {
+  	cols <- rep(col, length.out = length(tiles))
+	}
 
 	# plot all tiles individually, to allow for separate colors
 	# vectorize the plotting using polygon()
