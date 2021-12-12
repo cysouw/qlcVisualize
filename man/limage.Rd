@@ -5,26 +5,42 @@
 Drawing multi-level images for visualisation of nominal data with various levels.
 }
 \description{
-A multi-level image ("l-image") is a counterpart of the base function \code{\link{image}} for nominal data with various levels. A matrix (or dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided (like with \code{\link{heatmap}}).
+A multi-level image ("l-image") is a counterpart of the base function \code{\link{image}} to be used for nominal data with various levels (instead of numerical data). A matrix (or dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided (like with \code{\link{heatmap}}).
 }
 \usage{
-limage(x, col = rainbow(4), order = NULL,
-  show.remaining = FALSE, cex.axis = 1, cex.legend = 1, cex.remaining = 1,
-  font = "", asp = 1, method = "hamming", control = NULL, plot = TRUE)
+limage(x, order = NULL, col = rainbow(4), show.remaining = FALSE, col.remaining = "grey", pch.na = 20, col.na = "lightgrey", legend = 4, labels.x = rownames(x), labels.y = colnames(x), cex.axis = 1, cex.legend = 1, cex.remaining = 1, font = "", asp = nrow(x)/ncol(x), method = "hamming", control = NULL, plot = TRUE)
 }
 \arguments{
   \item{x}{
 A matrix or dataframe with the data to be displayed. Rows are shown on the x-axis, columns on the y-axis, showing the row- and column-names in the display. All data in the whole matrix is interpreted as one large factor with different levels.
 }
-  \item{col}{
-Colors to be used for the display. The number of colours specified here are used for the top most frequent phenomena in the data. All other are shown as 'others'. Optionally use \code{show.remaining} to show these others in the visualisation
-}
   \item{order}{
-How should rows and columns be ordered? By default the order of the data matrix \code{x} is used. Many possible orderings are available, see Details.
+How should rows and columns be ordered? By default the order of the data matrix \code{x} is used. Many possible algorithmic orderings are available, see Details. custom orderings should simply be applied to the \code{x} matrix beforehand, then without invoking this \code{order} argument.
+}
+  \item{col}{
+Colors to be used for the display. By default, the colours specified here are used in order of frequency of the phenomena in the data (i.e. \code{order(table(x), decreasing = TRUE}). A named vector of colors (or a named list) are applied to the levels as named. All other levels are shown as 'others'. Optionally use \code{show.remaining} to show labels for these others in the visualisation.
 }
   \item{show.remaining}{
-Logical: should all levels without color be shown inside the boxes?
+Logical: should all levels without color be shown inside the boxes as text?
 }
+  \item{col.remaining}{
+Which color should the text of the uncolored levels have?
+  }
+  \item{pch.na}{
+Symbol to be used for NA elements. Use \code{NULL} for no symbol, but complete coloring of the boxes.
+  }
+  \item{col.na}{
+Color to be used for NA elements.
+  }
+  \item{legend}{
+How many levels should be shown in the legend (in the order of frequency? Alternatively, provide a vector with names of the levels to be shown. Use \code{NULL} to supress the legend.
+  }
+  \item{labels.x}{
+Labels to be used on the x-axis. Defaults to rownames of the data. Use \code{NULL} to supress labels.
+  }
+    \item{labels.y}{
+Labels to be used on the y-axis. Defaults to colnames of the data. Use \code{NULL} to supress labels.
+  }
   \item{cex.axis}{
 Size of the row and columns names of \code{x}, shown as axis labels.
 }
@@ -38,7 +54,7 @@ Size of the text in the boxes. Only shown when \code{show.remaining = TRUE}.
 Font to be used in the plotting, can be necessary for unusual unicode symbols. Passed internally to \code{par(family)}.
 }
   \item{asp}{
-Aspect-ratio of the plotting of the boxes. By default the boxes are drawn square. Manually resizing the boxes by changing the plotting window can be acheived by setting \code{asp = NA}.
+Aspect-ratio of the plotting of the boxes. By default the complete plot will be approximatly square. Use the value 1 for all square boxes. Manually resizing the boxes by changing the plotting window can be acheived by setting \code{asp = NA}.
   }
   \item{method}{
 Method used to determine similarity, passed to \link[qlcMatrix]{sim.obs}, which is used internally to determine the order of rows and columns, using the method chosen in \code{order}.
@@ -51,7 +67,7 @@ By default, a plot is returned. When \code{FALSE}, nothing is plotted, but the r
   }
 }
 \details{
-There are many different orderings implemented: \code{"pca"} and \code{"varimax"} use the second dimension of \link{prcomp} and \link{varimax} respectively. \code{"mds"} will use the first dimension of \link{cmdscale}.
+There are many different orderings implemented: \code{"pca"} and \code{"varimax"} use the second dimension of \link{prcomp} and \link{varimax} respectively. \code{"eig"} will use the first eigenvector as computed by \link{RSpectra::eigs}. This is really quick for large datasets. \code{"mds"} will use the first dimension of \link{cmdscale}.
 
 Further, all methods as provided in the function \link[seriation]{seriate} can be called. Specifcally, \code{"R2E"} and \code{"MDS_angle"} seem worthwhile to try out. Any paramters for these methods can be passed using the option \link{control}.
 }
@@ -76,7 +92,7 @@ colnames(x) <- 1:5
 x
 
 # some basic level-images
-limage(x)
+limage(x, asp = 1)
 limage(x, col = heat.colors(5), asp = NA)
 limage(x, col = list(b="red",e="blue"), show.remaining = TRUE)
 

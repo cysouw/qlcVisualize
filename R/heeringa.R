@@ -13,7 +13,7 @@ heeringa <- function(dist, power = 0.5, mapping = c(1,2,3), method = "eigs", cen
   }
 
   # check format of dist
-  if (class(dist) == "dist") {
+  if (class(dist)[1] == "dist") {
     dist <- as.matrix(dist)
   }
 
