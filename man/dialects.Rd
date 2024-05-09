@@ -16,7 +16,7 @@ List of 2:
 }
 }
 \source{
-Excerpt from \url{http://github.com/cysouw/PAD/}
+Excerpt from \url{https://github.com/cysouw/PAD/}
 }
 \examples{
 \dontrun{

@@ -17,7 +17,7 @@ List of 3
 }
 }
 \source{
-Data from \url{https://www.uni-marburg.de/fb09/dsa/projekte/syhd}
+Data from \url{https://www.syhd.info/startseite/index.html}
 }
 \references{
 Jürg Fleischer, Simon Kasper & Alexandra N. Lenz (2012): Die Erhebung syntaktischer Phänomene durch die indirekte Methode: Ergebnisse und Erfahrungen aus dem Forschungsprojekt "Syntax hessischer Dialekte" (SyHD). In: Zeitschrift für Dialektologie und Linguistik 79/1, 2-42.

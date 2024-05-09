@@ -100,7 +100,7 @@ limage(x, asp = 1)
 limage(x, col = heat.colors(5), asp = NA)
 limage(x, col = list(b = "red", e = "blue"), show.remaining = TRUE)
 
-\donttest{
+\dontrun{
 # more interesting example, different "f" sounds in german dialects
 # note that fonts might be problematic on some platforms
 # plotting window should be made really large as well

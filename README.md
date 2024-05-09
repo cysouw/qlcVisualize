@@ -1,5 +1,5 @@
-[![version](http://www.r-pkg.org/badges/version/qlcVisualize)](https://cran.r-project.org/web/packages/qlcVisualize/index.html)
-![downloads](http://cranlogs.r-pkg.org/badges/qlcVisualize)
+[![version](https://www.r-pkg.org/badges/version/qlcVisualize)]( https://CRAN.R-project.org/package=qlcVisualize)
+![downloads](https://cranlogs.r-pkg.org/badges/qlcVisualize)
 [![DOI](https://zenodo.org/badge/19068/cysouw/qlcVisualize.svg)](https://zenodo.org/badge/latestdoi/19068/cysouw/qlcVisualize)
 
 qlcVisualize

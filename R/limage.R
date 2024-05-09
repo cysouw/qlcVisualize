@@ -154,7 +154,7 @@ limage <- function( x
 	}
 
 	# === plot boxes ===
-	# trick from http://stackoverflow.com/questions/15627674/
+	# trick from https://stackoverflow.com/questions/15627674/
 
 	cuts <- function(x) {
 	  n <- length(x) %/% 4
