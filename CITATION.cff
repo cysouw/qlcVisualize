@@ -1,0 +1,29 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: qlcVisualize. Visualization for Quantitative Language Comparison in R.
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Michael
+    family-names: Cysouw
+    email: cysouw@mac.com
+    orcid: 'https://orcid.org/0000-0003-3168-4946'
+    affiliation: Philipps Universität Marburg
+repository-code: 'https://github.com/cysouw/qlcVisualize'
+abstract: >-
+  A collection of visualizations made for quantitative language comparison,
+  but possibly also of interest to other fields. Currently implemented are
+  visualisations dealing nominal data with multiple levels ("level-map" and
+  "level-image"), and some utility functions for making geographic voronoi maps.
+keywords:
+  - linguistics
+  - language comparison
+  - visualization
+  - geographical maps
+license: GPL-3.0
+version: v0.2.1
+date-released: '2024-05-09'

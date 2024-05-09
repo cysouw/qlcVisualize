@@ -9,6 +9,8 @@ This submission intends to simply get everything working again.
 * CRAN win-builder https://win-builder.r-project.org, R version 4.4.0
 * rhub::rhub_check() for Linux and old macOS
 
+note: Windows on rhub_check failed to load package "terra"
+
 ## R CMD check results
 There were no ERRORs, NOTEs or WARNINGs. 
 
