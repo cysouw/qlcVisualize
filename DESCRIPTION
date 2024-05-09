@@ -12,6 +12,6 @@ Authors@R:
   )
 License: GPL-3
 Encoding: UTF-8
-Depends: mapdata
+Depends: R (>= 3.5.0), mapdata
 Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, geodata, 
   maps, mapplots, methods, sp, sf, alphahull, RSpectra, polyCub

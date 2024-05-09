@@ -24,7 +24,7 @@ The amount of space around the outer points at determining the window.
 Parameter for the 'curviness': lower values show more detail. Passed internally to \link[alphahull]{ahull}.
 }
   \item{country}{
-Name of the country to obtain borders and turn them into an \code{\link[spatstat.geom]{owin}} object needed for the function \code{\link{voronoi}}. For \code{mapsToOwin} check \code{\link[maps]{map}} how to specify the names. For \code{gadmToOwin}, check \code{\link[raster]{getData}}.
+Name of the country to obtain borders and turn them into an \code{\link[spatstat.geom]{owin}} object needed for the function \code{\link{voronoi}}. For \code{mapsToOwin} check \code{\link[maps]{map}} how to specify the names. For \code{gadmToOwin}, check \url{https://gadm.org}.
   }
   \item{database}{
 Database as used by \code{\link[maps]{map}}.

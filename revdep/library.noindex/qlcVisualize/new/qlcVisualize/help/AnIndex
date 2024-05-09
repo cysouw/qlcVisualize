@@ -1,0 +1,17 @@
+qlcVisualize-package	qlcVisualize-package
+boundary	boundary
+dialects	dialects
+gadmToOwin	window
+haspelmath	haspelmath
+heeringa	heeringa
+hessen	hessen
+hullToOwin	window
+levelimage	limage
+levelmap	lmap
+limage	limage
+lmap	lmap
+mapsToOwin	window
+qlcVisualize	qlcVisualize-package
+vmap	vmap
+voronoi	vmap
+voronoimap	vmap
