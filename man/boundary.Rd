@@ -59,11 +59,14 @@ boundary(hessen$villages, density = 0.1, grid = 20
 boundary(hessen$villages, plot = FALSE)
 
 # abstract example, showing tightness in action
-p <- cbind(c(1:10, 1:10), c(1:10, 10:1))
+oldpar<-par("mfrow")
 par(mfrow = c(1,3))
+
+p <- cbind(c(1:10, 1:10), c(1:10, 10:1))
 boundary(p, density = 0.005, grid = 20, tightness = "auto")
 boundary(p, density = 0.005, grid = 20, tightness = 5)
 boundary(p, density = 0.005, grid = 20, tightness = 3)
-par(mfrow = c(1,1))
+
+par(mfrow = oldpar)
 
 }

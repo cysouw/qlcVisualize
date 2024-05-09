@@ -5,7 +5,7 @@
 
 voronoi <- function(points, window) {
 
-  p <- spatstat.geom::ppp(points[,1],points[,2],window = window)
+  p <- spatstat.geom::ppp(points[,1], points[,2], window = window)
   v <- spatstat.geom::dirichlet(p)
 
   if (!is.null(attr(p, "rejects"))) {

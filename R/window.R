@@ -2,9 +2,8 @@
 # turn polygons from "maps" into "owin" window for spatstat
 # ====================
 
-mapsToOwin <- function(country, database = "worldHires") {
+mapsToOwin <- function(country, database = "world2Hires") {
 
-  requireNamespace("mapdata")
   raw <- maps::map(database = database
                    , regions = country
                    , plot = FALSE
@@ -31,18 +30,17 @@ mapsToOwin <- function(country, database = "worldHires") {
 
 gadmToOwin <- function(country, sub = NULL, level = 0) {
 
-  raw <- raster::getData("GADM", country = country, level = level)
+  raw <- geodata::gadm(country = country, level = level, path = tempdir())
 
   if (!is.null(sub)) {
-    name_objects <- which(grepl("^NAME_", names(raw@data)))
-    selection <- sapply(raw@data[name_objects], function(x) {
-      which(grepl(sub,x))
-    })
-    raw <- raw[unlist(selection),]
+    name <- paste("NAME", level, sep = "_")
+    d <- as.data.frame(raw)
+    col <- d[which(colnames(d) == name)]
+    selection <- which(col == sub)
+    raw <- raw[selection,]
   }
-
-  return( maptools::as.owin.SpatialPolygons(raw) )
-
+  raw <- spatstat.geom::as.owin(sf::as_Spatial(sf::st_as_sf(raw)))
+  return(raw)
 }
 
 # ====================
@@ -58,13 +56,11 @@ hullToOwin <- function(points, shift, alpha) {
   )
 
   p <- sapply(p, jitter, factor = 1)
-
   hull <- alphahull::ahull(p, alpha =  alpha)
 
   # turn this into a "owin" window
-
   hull <- .ah2sp(hull)
-  hull <- maptools::as.owin.SpatialPolygons(hull)
+  hull <- polyCub::as.owin.SpatialPolygons(hull)
 
   return(hull)
 }

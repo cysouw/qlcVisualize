@@ -16,7 +16,7 @@ voronoi(points, window)
 }
 \arguments{
   \item{tessellation}{
-Tessellation of class \code{\link[spatstat]{tess}} from the library \code{\link[spatstat]{spatstat}}. Can easily be produces by using the convenience function \code{voronoi} provided here.
+Tessellation of class \code{\link[spatstat.geom]{tess}} from the library \code{spatstat.geom}. Can easily be produces by using the convenience function \code{voronoi} provided here.
 }
   \item{col}{
 Vector of colors for the filling of the tessellation. Is recycled when there are more tiles than colours. The order of the tiles is the same as the order of the points as specified in the function \code{\link{voronoi}}.
@@ -40,18 +40,18 @@ Further arguments passed to \link{polygon}.
 Two-column matrix with all coordinates of the points to make a voronoi tessellation.
   }
   \item{window}{
-Outer boundary for the voronoi tessellation. Should be in the form of an \code{\link[spatstat]{owin}} object. There are two helper functions provided here to get such object. Note that the function \code{\link{voronoi}} will give warnings if there are points outside of this window.
+Outer boundary for the voronoi tessellation. Should be in the form of an \code{\link[spatstat.geom]{owin}} object. There are two helper functions provided here to get such object. Note that the function \code{\link{voronoi}} will give warnings if there are points outside of this window.
   }
 }
 \details{
-This code is almost completely based on functions from the \code{spatstat} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat}. Then a voronoi tessellation can be made (based on the function \code{\link[spatstat]{dirichlet}}, which in turn is based on \code{\link[deldir]{deldir}}). Finally, this tessalation can be plotted filled with different colours.
+This code is almost completely based on functions from the \code{spatstat.geom} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat.geom}. Then a voronoi tessellation can be made (based on the function \code{\link[spatstat.geom]{dirichlet}}, which in turn is based on \code{\link[deldir]{deldir}}). Finally, this tessalation can be plotted filled with different colours.
 
 Any legends have to be added manually by using \code{\link[graphics]{legend}}, see examples below.
 
 The function \code{voronoi} returns a warning when points are attested that lie outside of the specified border. For these points there is no polygon specified. Indices for the rejected points outside the border can be accessed by \code{attr(x, "rejects")}.
 }
 \value{
-\code{voronoi} returns a tessellation of the class \code{tess} from the package \code{spatstat}. When points outside of the border are attested, the indices of these points are added to an attribute "rejects".
+\code{voronoi} returns a tessellation of the class \code{tess} from the package \code{spatstat.geom}. When points outside of the border are attested, the indices of these points are added to an attribute "rejects".
 \code{vmap} plots a map.
 }
 \author{

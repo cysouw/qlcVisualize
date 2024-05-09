@@ -1,29 +1,17 @@
-## This is a resubmission
+## qlcVisualize, version 0.2.1
 
-I corrected the following errors
-
-* Changed the License to a non-FOSS license to comply with an imported package that has a non-FOSS license
-* Removed vignette builder from DESCRIPTION for now
-* Added import for methods::slot
-* Declared the non-ASCII data as UTF-8
+New submission because package was archived on CRAN
+Package was archived on 2019-01-25 as issues were not corrected in time.
+This submission intends to simply get everything working again.
 
 ## Test environments
-* local OS X 10.11 install, R 3.2.2
-* CRAN winbuilder via devtools
+* local macOS X 14.4.1, R version 4.3.0
+* CRAN win-builder https://win-builder.r-project.org, R version 4.4.0
+* rhub::rhub_check() for Linux, old macOS and Windows
 
 ## R CMD check results
-There were no ERRORs or WARNINGs. 
-
-There is a NOTE about the presence of non-ASCII in the included data
-
-    checking data for non-ASCII characters ... NOTE
-    Note: found 727 marked UTF-8 strings
-
-The winbuilder notes that there are extensive examples, I can put even more examples inside \dontrun if really necessary, but I'd rather not.
-
-    Examples with CPU or elapsed time > 5s
-         user system elapsed
-    lmap 4.81   0.19    5.06
+There were no ERRORs, NOTEs or WARNINGs. 
 
 ## Downstream dependencies
-There are no downstream dependencies (yet)
+checked via revdepcheck::revdep_check() on local macOS X 14.2.1
+No problems found

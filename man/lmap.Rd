@@ -15,9 +15,9 @@ Isoglosses show lines surrounding similar phenomena in space. Instead of drawing
 lmap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
    labels = NULL, cex = 0.7, col = "rainbow", add = FALSE,
-   ignore.others = FALSE, , normalize.frequency = FALSE, scale.pies = FALSE
-   lambda = NA, legend = TRUE, position = "bottomleft", cex.legend = 0.7, font = "",
-   note = TRUE, file.out = NULL, ...)
+   ignore.others = FALSE, normalize.frequency = FALSE, scale.pies = FALSE,
+   lambda = NA, legend = TRUE, position = "bottomleft", cex.legend = 0.7,
+   font = "", note = TRUE, file.out = NULL, ...)
 }
 \arguments{
   \item{points}{
@@ -105,8 +105,10 @@ plot(hessen$boundary, main = NULL)
 lmap(hessen$villages, f4, draw = 3, cex = 0.8, normalize.frequency = TRUE
   , density = 0.1, grid = 10, add = TRUE, cex.legend = 0.5, scale.pies = TRUE)
 
+\dontrun{
 # another isogloss example:
 # "f" sounds in German dialects in the words "Kochlöffel"
+# might give Unicode-errors because of phonetic symbols
 require(mapdata)
 map("worldHires", "Germany", fill = TRUE, col = "grey90")
 
@@ -114,6 +116,7 @@ data(dialects)
 lmap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24)
     , add = TRUE, position = "topleft")
 title(main = "f-sound in \'Kochlöffel\'")
+}
 
 # semantic map example
 # location of points via multidimensional scaling of complete data
@@ -128,23 +131,25 @@ boundary(p, density = 0.004, box = 0.15, tightness = 8)
 # labels to be plotted instead of points
 text <- gsub("\\\.", "\n", rownames(haspelmath))
 
-# show a few languages
+# show a few languages for Haspelmaths indefinite data
 # using a quick dummy function to set all parameters
-tmp <- function(columns) {
+indef <- function(columns) {
   lmap(p, haspelmath[,columns]
     , levels = 0.1, labels = text
     , density = 0.004, box = 0.15, tightness = 8
     , lambda = 0.1, note = FALSE)
 }
 
-\dontrun{
+oldpar <- par("mfcol")
 par(mfcol = c(2,3))
-tmp(1:3)
-tmp(4:6)
-tmp(7:9)
-tmp(10:12)
-tmp(13:17)
-tmp(18:22)
-par(mfcol = c(1,1))}
+
+indef(1:3)
+indef(4:6)
+indef(7:9)
+indef(10:12)
+indef(13:17)
+indef(18:22)
+
+par(mfcol = oldpar)
 
 }

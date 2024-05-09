@@ -5,7 +5,7 @@
 qlcVisualize
 ============
 
-**Visualisations for Quantitative Language Comparison (QLC)**
+**Visualisations for Quantitative Language Comparison**
 
 A collection of visualisations for QLC implemented in R.
 

@@ -10,7 +10,7 @@ Different ways to easily produce windows of class "owin" from the package "spats
 }
 \usage{
 hullToOwin(points, shift, alpha)
-mapsToOwin(country, database = "worldHires")
+mapsToOwin(country, database = "world2Hires")
 gadmToOwin(country, sub = NULL, level = 0)
 }
 \arguments{
@@ -24,13 +24,13 @@ The amount of space around the outer points at determining the window.
 Parameter for the 'curviness': lower values show more detail. Passed internally to \link[alphahull]{ahull}.
 }
   \item{country}{
-Name of the country to obtain borders and turn them into an \code{\link[spatstat]{owin}} object needed for the function \code{\link{voronoi}}. For \code{mapsToOwin} check \code{\link[maps]{map}} how to specify the names. For \code{gadmToOwin}, check \code{\link[raster]{getData}}.
+Name of the country to obtain borders and turn them into an \code{\link[spatstat.geom]{owin}} object needed for the function \code{\link{voronoi}}. For \code{mapsToOwin} check \code{\link[maps]{map}} how to specify the names. For \code{gadmToOwin}, check \code{\link[raster]{getData}}.
   }
   \item{database}{
 Database as used by \code{\link[maps]{map}}.
   }
   \item{sub, level}{
-Names for Subdivisions of countries as available in the GADM database. Read the help file \code{\link[raster]{getData}} for more information about GADM, the subdivisions and how to acces them.
+Names for Subdivisions of countries as available in the GADM database
   }
 }
 \details{
@@ -50,15 +50,16 @@ Includes code from code from Andrew Bevan, based on code from Dylan Beaudette, s
 The function \code{gadmToOwin} needs online access to download the data. The data is saved in the current working directory, and will not be downloaded again when it is already available there.
 }
 \examples{
-# Boundary of the German state "Hessen"
-# This will need to access the GADM database online
 \dontrun{
-boundary <- gadmToOwin("DEU","Hessen",1)}
+# Boundary of the German state "Hessen"
+# This will need to access the online GADM database
+# and might take some time
+boundary <- gadmToOwin("DEU", "Hessen", 1)
+}
 
 # A window does not have to be continuous
-\dontrun{
-random <- mapsToOwin(c("Germany","Greece"))
-plot(random, main = NULL)}
+random <- mapsToOwin(c("Germany", "Greece"))
+plot(random, main = NULL)
 
 # hull around some points
 # note influence of alpha and shift

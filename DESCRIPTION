@@ -1,11 +1,17 @@
 Package: qlcVisualize
-Type: Package
-Title: Visualization for Quantitative Language Comparison (QLC)
-Version: 0.1.0
-Date: 2015-10-20
-Author: Michael Cysouw
-Maintainer: Michael Cysouw <cysouw@mac.com>
+Title: Visualization for Quantitative Language Comparison
 Description: Collection of visualizations as used in quantitative language comparison.
-License: ACM | file LICENSE
+Version: 0.2.1
+Date: 2024-05-08
+Authors@R:
+  person(
+    "Michael", "Cysouw", 
+    email = "cysouw@mac.com", 
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0003-3168-4946")
+  )
+License: GPL-3
 Encoding: UTF-8
-Imports: fields, MASS, qlcMatrix, seriation, spatstat, raster, maps, mapdata, maptools, mapplots, methods, sp, alphahull, RSpectra
+Depends: mapdata
+Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, geodata, 
+  maps, mapplots, methods, sp, sf, alphahull, RSpectra, polyCub

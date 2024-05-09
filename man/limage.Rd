@@ -8,7 +8,11 @@ Drawing multi-level images for visualisation of nominal data with various levels
 A multi-level image ("l-image") is a counterpart of the base function \code{\link{image}} to be used for nominal data with various levels (instead of numerical data). A matrix (or dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided (like with \code{\link{heatmap}}).
 }
 \usage{
-limage(x, order = NULL, col = rainbow(4), show.remaining = FALSE, col.remaining = "grey", pch.na = 20, col.na = "lightgrey", legend = 4, labels.x = rownames(x), labels.y = colnames(x), cex.axis = 1, cex.legend = 1, cex.remaining = 1, font = "", asp = nrow(x)/ncol(x), method = "hamming", control = NULL, plot = TRUE)
+limage(x, order = NULL, col = rainbow(4), show.remaining = FALSE,
+  col.remaining = "grey", pch.na = 20, col.na = "lightgrey", legend = length(col),
+  labels.x = rownames(x), labels.y = colnames(x), cex.axis = 1, cex.legend = 1,
+  cex.remaining = 1, font = "", asp = nrow(x)/ncol(x), method = "hamming",
+  control = NULL, plot = TRUE)
 }
 \arguments{
   \item{x}{
@@ -67,7 +71,7 @@ By default, a plot is returned. When \code{FALSE}, nothing is plotted, but the r
   }
 }
 \details{
-There are many different orderings implemented: \code{"pca"} and \code{"varimax"} use the second dimension of \link{prcomp} and \link{varimax} respectively. \code{"eig"} will use the first eigenvector as computed by \link{RSpectra::eigs}. This is really quick for large datasets. \code{"mds"} will use the first dimension of \link{cmdscale}.
+There are many different orderings implemented: \code{"pca"} and \code{"varimax"} use the second dimension of \link{prcomp} and \link{varimax} respectively. \code{"eig"} will use the first eigenvector as computed by \link[RSpectra]{eigs}. This is really quick for large datasets. \code{"mds"} will use the first dimension of \link{cmdscale}.
 
 Further, all methods as provided in the function \link[seriation]{seriate} can be called. Specifcally, \code{"R2E"} and \code{"MDS_angle"} seem worthwhile to try out. Any paramters for these methods can be passed using the option \link{control}.
 }
@@ -94,16 +98,16 @@ x
 # some basic level-images
 limage(x, asp = 1)
 limage(x, col = heat.colors(5), asp = NA)
-limage(x, col = list(b="red",e="blue"), show.remaining = TRUE)
+limage(x, col = list(b = "red", e = "blue"), show.remaining = TRUE)
 
-\dontrun{
+\donttest{
 # more interesting example, different "f" sounds in german dialects
 # note that fonts might be problematic on some platforms
 # plotting window should be made really large as well
 data(dialects)
 limage(dialects$data, col = rainbow(8), order = "R2E"
     , cex.axis = 0.3, cex.legend = 0.7
-    , show.remaining = T, cex.remaining = 0.2)
+    , show.remaining = TRUE, cex.remaining = 0.2)
 
 # get reordering of rows
 # to identify the group of words with "p-f" correspondences

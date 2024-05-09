@@ -1,3 +1,8 @@
+# qlcData 0.2.1
+
+* bugfixes to get the package back on CRAN
+* trying to adapt to the changes in spatial methods/formats in R
+
 # qlcData 0.2
 
 * selectively make pies in lmap only for those points that are multi-valued

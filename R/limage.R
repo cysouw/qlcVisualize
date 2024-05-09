@@ -5,7 +5,7 @@ limage <- function( x
                   , col.remaining = "grey"
                   , pch.na = 20
                   , col.na = "lightgrey"
-          				, legend = 4
+          				, legend = length(col)
           				, labels.x = rownames(x)
           				, labels.y = colnames(x)
           				, cex.axis = 1
@@ -129,7 +129,7 @@ limage <- function( x
   if (!is.null(names(col))) {
 	  levs <- names(col)
 	} else {
-		levs <- names(sort(table(as.vector(x)),decreasing = T))
+		levs <- names(sort(table(as.vector(x)), decreasing = T))
 		if (length(levs) > length(col)) {
 			levs <- levs[1:length(col)]
 		} else {
@@ -185,6 +185,7 @@ limage <- function( x
 	# === add names of rare levels ===
 
 	if (show.remaining) {
+	  all <- names(table(x))
 		remaining <- all[is.na(match(all,levs))]
 		for (i in remaining) {
 			todo <- which(x == i, arr.ind = T)
@@ -213,7 +214,7 @@ limage <- function( x
   		 , y = dim(x)[2] + 0.2
   		 , legend = shown
   		 , xpd = TRUE
-  		 , pch = c(rep(15, times =  length(shown)))
+  		 , pch = c(rep(15, times = length(shown)))
   		 , col = c(col)
   		 , bty = "n"
   		 , cex = cex.legend
