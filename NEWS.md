@@ -1,7 +1,7 @@
 # qlcVisualize 0.2.1
 
 * bugfixes to get the package back on CRAN
-* trying to adapt to the changes in spatial methods/formats in R
+* trying to adapt to the ongoing changes in spatial methods/formats in R
 
 # qlcVisualize 0.2
 

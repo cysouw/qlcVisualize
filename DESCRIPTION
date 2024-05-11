@@ -1,6 +1,9 @@
 Package: qlcVisualize
 Title: Visualization for Quantitative Language Comparison
-Description: Collection of visualizations as used in quantitative language comparison.
+Description: Collection of visualizations as used in quantitative language 
+  comparison. Currently implemented are visualisations dealing nominal data with 
+  multiple levels ("level-map" and "level-image"), and assistance for making 
+  geographic voronoi maps.
 Version: 0.2.1
 Date: 2024-05-08
 Authors@R:

@@ -203,7 +203,8 @@ lmap <- function( points, data
 	# ==========
 
 	if (legend) {
-	  par(family = font)
+	  oldpar <- par(family = font)
+	  on.exit(par(oldpar))
 	  if (sum(!multi.valued, na.rm = TRUE) > 0 & is.null(labels)) {
 
 	    pch <- 1:length(selection)
@@ -222,7 +223,7 @@ lmap <- function( points, data
 	            , cex = cex.legend
 	    )
 	  }
-	  par(family = "")
+	  par(oldpar)
 	}
 
   # =====================
@@ -303,13 +304,14 @@ lmap <- function( points, data
     bw <- rep("black", times = nrow(points))
     bw[ignore] <- "grey"
 
-    par(family = font)
+    oldpar <- par(family = font)
+    on.exit(par(oldpar))
     text( points
           , labels = labels
           , col = bw
           , cex = cex
     )
-    par(family = "")
+    par(oldpar)
 
   }
 

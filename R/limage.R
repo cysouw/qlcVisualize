@@ -93,7 +93,8 @@ limage <- function( x
 	# === plotting windows ===
 
 	plot.new()
-  op <- par(family = font, mar = c(5,4,4,4) + 0.1)
+  oldpar <- par(family = font, mar = c(5,4,4,4) + 0.1)
+  on.exit(par(oldpar))
 	plot.window(xlim = c(0, dim(x)[1])
 			       , ylim = c(0, dim(x)[2])
 			       , asp = asp
@@ -224,7 +225,7 @@ limage <- function( x
 
 	# === return to default par settings ===
 
-	par(op)
+	par(oldpar)
 
 	# === return ordering invisibly ===
 
