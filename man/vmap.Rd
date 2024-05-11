@@ -6,7 +6,7 @@
 Plotting a Voronoi-map ("v-map")
 }
 \description{
-A "voronoi-map" (voronoi-tessellation, also known as dirichlet tessellation) is used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tessellations. Also described here are a helper functions to produce the tessellation.
+A Voronoi-map (voronoi-tessellation, also known as dirichlet tessellation) is used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tessellations. Also described here are a helper functions to produce the tessellation.
 }
 \usage{
 vmap(tessellation, col = NULL, add = FALSE,
@@ -37,14 +37,14 @@ Line width of borders.
 Further arguments passed to \link{polygon}.
 }
   \item{points}{
-Two-column matrix with all coordinates of the points to make a voronoi tessellation.
+Two-column matrix with all coordinates of the points to make a Voronoi tessellation.
   }
   \item{window}{
-Outer boundary for the voronoi tessellation. Should be in the form of an \code{\link[spatstat.geom]{owin}} object. There are two helper functions provided here to get such object. Note that the function \code{\link{voronoi}} will give warnings if there are points outside of this window.
+Outer boundary for the Voronoi tessellation. Should be in the form of an \code{\link[spatstat.geom]{owin}} object. There are two helper functions provided here to get such object. Note that the function \code{\link{voronoi}} will give warnings if there are points outside of this window.
   }
 }
 \details{
-This code is almost completely based on functions from the \code{spatstat.geom} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat.geom}. Then a voronoi tessellation can be made (based on the function \code{\link[spatstat.geom]{dirichlet}}, which in turn is based on \code{\link[deldir]{deldir}}). Finally, this tessalation can be plotted filled with different colours.
+This code is almost completely based on functions from the \code{spatstat.geom} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat.geom}. Then a Voronoi tessellation can be made (based on the function \code{\link[spatstat.geom]{dirichlet}}, which in turn is based on \code{\link[deldir]{deldir}}). Finally, this tessalation can be plotted filled with different colours.
 
 Any legends have to be added manually by using \code{\link[graphics]{legend}}, see examples below.
 
@@ -58,7 +58,7 @@ The function \code{voronoi} returns a warning when points are attested that lie 
 Michael Cysouw <cysouw@mac.com>
 }
 \examples{
-# make a voronoi tessellation for some villages in hessen
+# make a Voronoi tessellation for some villages in hessen
 data(hessen)
 plot(hessen$boundary)
 points(hessen$villages, cex = 0.3)

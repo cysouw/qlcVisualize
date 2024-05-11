@@ -16,7 +16,7 @@ Version: \tab 0.2.1\cr
 Date: \tab 2024-05-08\cr
 License: \tab GPL-3\cr
 }
-Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("level-map") and \link{limage} ("level-image"), and some assistance for making geographic voronoi maps \link{vmap}.
+Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("level-map") and \link{limage} ("level-image"), and some assistance for making geographic Voronoi maps \link{vmap}.
 }
 \author{
 Michael Cysouw <cysouw@mac.com>

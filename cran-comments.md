@@ -4,10 +4,20 @@ New submission because package was archived on CRAN
 Package was archived on 2019-01-25 as issues were not corrected in time.
 This submission intends to simply get everything working again.
 
+## Comments to second review
+
+- The word "Voronoi" is now capitalized throughout all text in the package
+- The methods implemented in this package are not yet published. However,
+  what is called "level-map" here is simply an implementation of widely-used
+  visualizations, normally drawn by hand (as explained in the Rd file). Voronoi
+  diagrams of course are well-known. Finally, the method "level-image" is
+  completely new AFAIK, explicitly made for my own research (which I hope will
+  be publishable soon).
+
 ## Comments to review
 
-- Description in DESCRIPTION has been extended
-- There are some literuature references in the Rd-files, but they pertain to
+- Description in DESCRIPTION has been extended.
+- There are some literature references in the Rd-files, but they pertain to
   individual function, not to the packages as a whole. It does not seem sensible
   to elevate them to the level of the whole package.
 - All example marked as \dontrun have some problem which preclude them from being 

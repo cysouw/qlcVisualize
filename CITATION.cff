@@ -18,7 +18,7 @@ abstract: >-
   A collection of visualizations made for quantitative language comparison,
   but possibly also of interest to other fields. Currently implemented are
   visualisations dealing nominal data with multiple levels ("level-map" and
-  "level-image"), and some utility functions for making geographic voronoi maps.
+  "level-image"), and some utility functions for making geographic Voronoi maps.
 keywords:
   - linguistics
   - language comparison
