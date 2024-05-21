@@ -19,6 +19,19 @@ voronoi <- function(points, window) {
 	return(v)
 }
 
+# turn into sf object
+# sfGeom <- sf::st_as_sfc(tessellation)
+
+# add features
+# n <- rep(1, times = length(sfGeom))
+# sfDataFrame <- sf::st_sf(geometry = sfGeom, n = n)
+
+# make cartogram
+# carto <- cartogramR::cartogramR(sfDataFrame, count = "n")$cartogram
+
+# easy to colour, also set "border = NA" to remove borders
+# problem: very difficult to make outer border
+
 # ====================
 # plotting of a voronoi-map (v-map)
 # default plotting of tessellations in spatstat is not easy to use with colour filling
