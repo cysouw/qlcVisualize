@@ -32,6 +32,14 @@ voronoi <- function(points, window) {
 # easy to colour, also set "border = NA" to remove borders
 # problem: very difficult to make outer border
 
+# sfDataFrame <- sf::st_sf(geometry = carto, n = n)
+# singel <- dyplr::summarise(sfDataFrame)
+# plot(carto)
+# plot(tmp, add = T, border = "red")
+
+# also : sf::st_union()
+# both work only with rather smooth boundaries after cartogram
+
 # ====================
 # plotting of a voronoi-map (v-map)
 # default plotting of tessellations in spatstat is not easy to use with colour filling
