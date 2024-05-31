@@ -1,0 +1,195 @@
+weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
+                            weights = "equal", grouping = NULL,
+                            concavity = 2, expansion = 1000, maxit = 5) {
+
+  # ===
+  # crs
+  # ===
+
+  if (!is.null(crs)) {
+    # use crs provided in call
+    crs <- sf::st_crs(crs)
+  } else {
+    # respect crs from points or window
+    if ((is(x, "sf") | is(x, "sfc")) && !is.na(sf::st_crs(x))) {
+      crs_x <- sf::st_crs(x)
+    } else {
+      crs_x <- NULL
+    }
+    if ((is(window, "sf") | is(window, "sfc")) && !is.na(sf::st_crs(window))) {
+      crs_window <- sf::st_crs(window)
+    } else {
+      crs_window <- NULL
+    }
+    if (is.null(crs_x) & is.null(crs_window)) {
+      stop("No crs provided")
+    } else if (!is.null(crs_x) & !is.null(crs_window)) {
+      if (crs_x == crs_window) {
+        crs <- crs_x
+      } else {
+        stop("crs from x and window are different")
+      }
+    } else if (!is.null(crs_x)) {
+      crs <- crs_x
+    } else {
+      crs <- crs_window
+    }
+  }
+
+  # ======
+  # Points
+  # ======
+
+  if (!is.null(y)) {
+    # combine x and y values
+    x <- data.frame(x, y)
+  }
+  if (!is(x, "sf")) {
+    # turn coordinates into sf
+    colnames(x) <- c("X","Y")
+    x <- sf::st_as_sf(x, coords=c("X", "Y"), crs = 4326)
+    x <- sf::st_transform(x, crs)
+  }
+
+  # prepare output
+  result <- list(points = sf::st_geometry(x))
+
+  # =====================
+  # Window help functions
+  # =====================
+
+  getConcaveWindow <- function(x) {
+    # concaveman hull
+    w <- concaveman::concaveman(x, concavity = concavity)
+    w <- sf::st_transform(w, crs)
+    # use spatstat::exand.owin to make nice expansion
+    if (expansion > 0) {
+      w <- spatstat.geom::as.owin(w)
+      w <- spatstat.random::expand.owin(w, distance = expansion)
+      w <- sf::st_as_sf(w)
+      sf::st_crs(w) <- crs
+    }
+    return(sf::st_geometry(w))
+  }
+
+  getWindow <- function(group) {
+    ids <- which(grouping == group)
+    if (length(ids) == 1) {
+      w <- sf::st_geometry(sf::st_buffer(x[ids,], dist = expansion))
+    } else if (length(ids) == 2) {
+      line <- sf::st_cast(sf::st_combine(x[ids,]), "LINESTRING")
+      w <- sf::st_buffer(line, dist = expansion)
+    } else {
+      w <- getConcaveWindow(x[ids,])
+    }
+    return(w)
+  }
+
+  # ======
+  # Window
+  # ======
+
+  if (!is.null(window)) {
+
+    # try to convert window to spatstat::owin
+    if (is(window, "owin") | is(window, "SpatVector") | is(window, "Spatial")) {
+      window <- sf::st_as_sf(window)
+      if (is.na(sf::st_crs(window))) {
+        sf::st_crs(window) <- 4326
+      }
+    }
+    if (is(window, "sf")) {
+      # make valid window
+      window <- sf::st_make_valid(sf::st_set_precision(window, 1e6))
+      window <- sf::st_transform(window, crs)
+      filled <- sf::st_intersects(x, window, sparse = FALSE)
+      # remove polygons in window that have no points
+      empty <- which(colSums(filled) == 0)
+      if (length(empty) > 0) {
+        window <- window[-empty, ]
+        result$emptyPolygons <- empty
+        warning("Some polygons do not contain any points and are removed, see $emptyPolygons."
+                , call. = FALSE)
+      }
+      window <- sf::st_union(window)
+      # check for points outside of the window
+      outside <- which(rowSums(filled) == 0)
+      if (length(outside) > 0) {
+        x <- x[-outside,]
+        result$outsideWindow <- outside
+        warning("Some points lie outside of the window and are ignored, see $outsideWindow."
+                , call. = FALSE)
+        }
+    } else {
+      stop("Provided window cannot be interpreted: try to use sf")
+    }
+
+  } else {
+
+    # construct window from points and grouping
+    if (is.null(grouping)) {
+      # no grouping: a single window around all points
+      window <- getConcaveWindow(x)
+    } else {
+      # various windows for groups in grouping vector
+      groups <- names(table(grouping))
+      window <- sapply(groups, getWindow, simplify = FALSE)
+      window <- sf::st_sfc(sapply(window, sf::st_geometry))
+      sf::st_crs(window) <- crs
+    }
+  }
+
+  # prepare output
+  result$window <- sf::st_union(window)
+
+  # =======
+  # Voronoi
+  # =======
+
+  # this is hocus-pocus!
+  v <- sf::st_voronoi(sf::st_union(x))
+  v <- sf::st_intersection(sf::st_cast(v), window)
+  v <- sf::st_join(x = sf::st_sf(v), y = x, join=sf::st_intersects)
+  v <- sf::st_cast(v, "MULTIPOLYGON")
+  # both union and voronoi do not keep the order, so reorder back
+  order <- unlist(sf::st_intersects(x, v))
+  v <- v[order,]
+
+  # prepare output
+  result$voronoi <- sf::st_geometry(v)
+
+  # =========
+  # Cartogram
+  # =========
+
+  # using cartogramR
+  if (!is.null(weights)) {
+    if (length(weights) ==  1 && weights == "equal") {
+      # default to equally-sized polygons
+      weights <- rep(1, times = nrow(x))
+    } else if (!is.null(window) && length(outside > 0)) {
+      # possibly remove weights for points outside window
+      weights <- weights[-outside]
+    }
+    result$weights = weights
+    # cartogram
+    tmp <- sf::st_sf(voronoi = result$voronoi, weights = weights)
+    sf::st_geometry(tmp) <- "voronoi"
+    carto <- cartogramR::cartogramR(tmp, count = "weights", options = list(maxit = maxit))
+    # make new window from cartogram
+    valid_carto <- sf::st_make_valid(sf::st_set_precision(carto$cartogram, 1e6))
+    new_window <- sf::st_union(valid_carto)
+    # new points
+    new_points <- data.frame(carto$final_centers)
+    new_points <- sf::st_geometry(sf::st_as_sf(new_points, coords=c(1,2), crs = crs))
+    # store results
+    result$weightedPoints <- new_points
+    result$weightedWindow <- new_window
+    result$weightedVoronoi <- sf::st_cast(valid_carto, "MULTIPOLYGON")
+  }
+
+  return(result)
+}
+
+# shorter alternative name
+wmap <- weightedMap

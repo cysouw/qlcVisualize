@@ -25,7 +25,7 @@ Jürg Fleischer, Simon Kasper & Alexandra N. Lenz (2012): Die Erhebung syntaktis
 \examples{
 data(hessen)
 
-tessalation <- voronoi(hessen$villages, hessen$boundary)
-plot(tessalation)
+tessalation <- weightedMap(hessen$villages, window = hessen$boundary, crs = 2397)
+plot(tessalation$weightedVoronoi)
 }
 \keyword{datasets}

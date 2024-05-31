@@ -12,11 +12,11 @@ A collection of specific visualisations of data as used in quantitative language
 \tabular{ll}{
 Package: \tab qlcVisualize\cr
 Type: \tab Package\cr
-Version: \tab 0.2.1\cr
-Date: \tab 2024-05-08\cr
+Version: \tab 0.3\cr
+Date: \tab 2024-05-31\cr
 License: \tab GPL-3\cr
 }
-Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("level-map") and \link{limage} ("level-image"), and some assistance for making geographic Voronoi maps \link{vmap}.
+Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("levelMap") and \link{fmap} ("factorMap"), and some assistance for making of weighted geographic Voronoi maps \link{wmap} ("weigthedMap").
 }
 \author{
 Michael Cysouw <cysouw@mac.com>

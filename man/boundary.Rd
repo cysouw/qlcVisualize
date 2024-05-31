@@ -1,10 +1,10 @@
 \name{boundary}
 \alias{boundary}
 \title{
-Checking boundary parameters vor plotting of \code{lmap}
+Checking boundary parameters for plotting of \code{levelMap}
 }
 \description{
-The function \code{\link{lmap}} can be tweaked by various parameters determining the boundary of the interplolation. The function \code{boundary} helps finding suitable parameters.
+The function \code{\link{levelMap}} can be tweaked by various parameters determining the boundary of the interpolation. The function \code{boundary} helps finding suitable parameters.
 }
 \usage{
 boundary(points, density = 0.02, grid = 10, box.offset = 0.1
@@ -34,7 +34,7 @@ Logical: by default the impact of the chosen parameters is shown. If \code{FALSE
 }
 }
 \details{
-Instead of trying to use a polygon as a boundary for the interpolation internally in \code{\link{lmap}} it turned out to be easier to use a collection of points that mark th
+Instead of trying to use a polygon as a boundary for the interpolation internally in \code{\link{levelMap}} it turned out to be easier to use a collection of points that mark th
 }
 \value{
 By default, returns a plot with the original points in black, the points below density in red, and the box around the points in blue. Contour lines of the density are shown to choose different density parameters.
@@ -46,7 +46,7 @@ When \code{plot = FALSE}, the blue and red points from the graphic are returned 
 Michael Cysouw <cysouw@mac.com>
 }
 \seealso{
-Used internally in \code{\link{lmap}}. The parameters of this function can be passed through, typically \code{density} and \code{box.offset}.
+Used internally in \code{\link{levelMap}}. The parameters of this function can be passed through, typically \code{density} and \code{box.offset}.
 }
 \examples{
 data(hessen)

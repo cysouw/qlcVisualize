@@ -1,18 +1,18 @@
-\name{lmap}
+\name{levelMap}
+\alias{levelMap}
 \alias{lmap}
-\alias{levelmap}
 \title{
 Drawing multi-level maps (e.g. semantic maps or linguistic isoglosses)
 }
 \description{
-A multi-level map ("l-map") is a plot of the distribution of nominal data with multiple levels in space. Such visualisations have two direct use-case in linguistics, viz. semantic maps and isoglosses. The drawing if the lines in space is performed by interpolation in this function (see details).
+A multi-level map ("lmap") is a plot of the distribution of nominal data with multiple levels in space. Such visualisations have two direct use-case in linguistics, viz. semantic maps and isoglosses. The drawing if the lines in space is performed by interpolation in this function (see details).
 
 Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. An level-map tries to emulate this linguistic visualiation in an automatic fashion with various options for visual presentation.
 
 Isoglosses show lines surrounding similar phenomena in space. Instead of drawing an exact boundary around measured points, an interpolation-technique is used here to show areas of interest. By only showing boundaries, multiple phenomena can be shown in one graphic.
 }
 \usage{
-lmap(points, data,
+levelMap(points, data,
    main = NULL, draw = 5, levels = c(0.41, 0.46, 0.51),
    labels = NULL, cex = 0.7, col = "rainbow", add = FALSE,
    ignore.others = FALSE, normalize.frequency = FALSE, scale.pies = FALSE,
@@ -97,12 +97,12 @@ data(hessen)
 f4 <- hessen$data[,9:13]
 
 # look for area for interpolation, changing density and grid parameters
-# suitable parameters can be passed through to function lmap below
+# suitable parameters can be passed through to function levelMap below
 boundary(hessen$villages, density = 0.1, grid = 10)
 
 # useful size of pies has to be determined by changing cex
 plot(hessen$boundary, main = NULL)
-lmap(hessen$villages, f4, draw = 3, cex = 0.8, normalize.frequency = TRUE
+levelMap(hessen$villages, f4, draw = 3, cex = 0.8, normalize.frequency = TRUE
   , density = 0.1, grid = 10, add = TRUE, cex.legend = 0.5, scale.pies = TRUE)
 
 \dontrun{
@@ -113,7 +113,7 @@ require(mapdata)
 map("worldHires", "Germany", fill = TRUE, col = "grey90")
 
 data(dialects)
-lmap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24)
+levelMap(dialects$villages, dialects$data[,21], levels = c(0.20, 0.22, 0.24)
     , add = TRUE, position = "topleft")
 title(main = "f-sound in \'Kochlöffel\'")
 }
@@ -134,7 +134,7 @@ text <- gsub("\\\.", "\n", rownames(haspelmath))
 # show a few languages for Haspelmaths indefinite data
 # using a quick dummy function to set all parameters
 indef <- function(columns) {
-  lmap(p, haspelmath[,columns]
+  levelMap(p, haspelmath[,columns]
     , levels = 0.1, labels = text
     , density = 0.004, box = 0.15, tightness = 8
     , lambda = 0.1, note = FALSE)

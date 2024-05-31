@@ -1,4 +1,4 @@
-lmap <- function( points, data
+levelMap <- function( points, data
             , main = NULL
 						, draw = 5
 						, levels = c(0.41, 0.46, 0.51)
@@ -320,3 +320,6 @@ lmap <- function( points, data
 		dev.off()
 	}
 }
+
+# alternative function call
+lmap <- levelMap

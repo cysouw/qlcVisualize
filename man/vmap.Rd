@@ -6,6 +6,8 @@
 Plotting a Voronoi-map ("v-map")
 }
 \description{
+These functions are deprecated: use \link{weightedMap} instead.
+
 A Voronoi-map (voronoi-tessellation, also known as dirichlet tessellation) is used in quantitative dialectology. This function is a convenience wrapper to easily produce dialect maps with voronoi tessellations. Also described here are a helper functions to produce the tessellation.
 }
 \usage{
@@ -58,6 +60,7 @@ The function \code{voronoi} returns a warning when points are attested that lie 
 Michael Cysouw <cysouw@mac.com>
 }
 \examples{
+\dontrun{
 # make a Voronoi tessellation for some villages in hessen
 data(hessen)
 plot(hessen$boundary)
@@ -86,5 +89,5 @@ legend("bottomright", legend = c("es mir", "mir es / other"),
 d <- dist(hessen$data, method = "canberra")
 cols <- heeringa(d)
 vmap(tessellation, col = cols, border = NA)
-
+}
 }

@@ -6,11 +6,13 @@
 Producing windows of class "owin"
 }
 \description{
+These functions are deprecated: use \link{weightedMap} instead.
+
 Different ways to easily produce windows of class "owin" from the package "spatstat" are presented here. These are used by \link{voronoi}.
 }
 \usage{
 hullToOwin(points, shift, alpha)
-mapsToOwin(country, database = "world2Hires")
+mapsToOwin(country, database = "world")
 gadmToOwin(country, sub = NULL, level = 0)
 }
 \arguments{
@@ -55,7 +57,6 @@ The function \code{gadmToOwin} needs online access to download the data. The dat
 # This will need to access the online GADM database
 # and might take some time
 boundary <- gadmToOwin("DEU", "Hessen", 1)
-}
 
 # A window does not have to be continuous
 random <- mapsToOwin(c("Germany", "Greece"))
@@ -72,5 +73,5 @@ points(hessen$villages)
 hull <- hullToOwin(hessen$villages, shift = 0.1, alpha = 0.2)
 plot(hull)
 points(hessen$villages)
-
+}
 }

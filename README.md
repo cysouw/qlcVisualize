@@ -7,7 +7,7 @@ qlcVisualize
 
 **Visualisations for Quantitative Language Comparison**
 
-A collection of visualisations for QLC implemented in R.
+A collection of visualisations for quantitative language comparison implemented in R.
 
 This is an early alpha version, but it should function as far as it goes. You can download the package directly from CRAN. Have a look at the examples in the help files to get an idea how to use the package:
 

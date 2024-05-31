@@ -1,14 +1,15 @@
-\name{limage}
+\name{factorMap}
+\alias{factorMap}
+\alias{fmap}
 \alias{limage}
-\alias{levelimage}
 \title{
-Drawing multi-level images for visualisation of nominal data with various levels.
+Visualising nominal data with various factors.
 }
 \description{
-A multi-level image ("l-image") is a counterpart of the base function \code{\link{image}} to be used for nominal data with various levels (instead of numerical data). A matrix (or dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided (like with \code{\link{heatmap}}).
+A factor map ("fmap") is a counterpart of the base function \code{\link{image}}. In contrast to an image, a factor map can be used for nominal data with various levels (instead of continuous numerical data). A matrix (or a dataframe coerced as matrix) is visualised by showing the most frequent contents of the cells by colouring. There are various methods for ordering of rows and columns provided, alike to a \code{\link{heatmap}}).
 }
 \usage{
-limage(x, order = NULL, col = rainbow(4), show.remaining = FALSE,
+factorMap(x, order = NULL, col = rainbow(4), show.remaining = FALSE,
   col.remaining = "grey", pch.na = 20, col.na = "lightgrey", legend = length(col),
   labels.x = rownames(x), labels.y = colnames(x), cex.axis = 1, cex.legend = 1,
   cex.remaining = 1, font = "", asp = nrow(x)/ncol(x), method = "hamming",
@@ -79,7 +80,7 @@ Further, all methods as provided in the function \link[seriation]{seriate} can b
 A plot is returned by default. When \code{plot = FALSE}, a list is returned with the reordering of the rows and the columns.
 }
 \note{
-Note that it is slightly confusing that the image is sort-of a transposed version of the data matrix (rows of the matrix are shown as horizontal lines in the graphic, and they are shown from bottom to top). This is standard practice though, also used in \link{image} and \link{heatmap}, so it is continued here.
+Note that it is slightly confusing that the resulting image is a transposed version of the data matrix (rows of the matrix are shown as horizontal lines in the graphic, and they are shown from bottom to top). This is standard practice though, also used in \link{image} and \link{heatmap}, so it is continued here.
 }
 \author{
 Michael Cysouw <cysouw@mac.com>
@@ -95,22 +96,22 @@ rownames(x) <- c("one", "two", "three")
 colnames(x) <- 1:5
 x
 
-# some basic level-images
-limage(x, asp = 1)
-limage(x, col = heat.colors(5), asp = NA)
-limage(x, col = list(b = "red", e = "blue"), show.remaining = TRUE)
+# some basic factor maps
+factorMap(x, asp = 1)
+factorMap(x, col = heat.colors(5), asp = NA)
+factorMap(x, col = list(b = "red", e = "blue"), show.remaining = TRUE)
 
 \dontrun{
 # more interesting example, different "f" sounds in german dialects
 # note that fonts might be problematic on some platforms
 # plotting window should be made really large as well
 data(dialects)
-limage(dialects$data, col = rainbow(8), order = "R2E"
+factorMap(dialects$data, col = rainbow(8), order = "R2E"
     , cex.axis = 0.3, cex.legend = 0.7
     , show.remaining = TRUE, cex.remaining = 0.2)
 
 # get reordering of rows
 # to identify the group of words with "p-f" correspondences
-limage(dialects$data, order = "R2E", plot = FALSE)
+factorMap(dialects$data, order = "R2E", plot = FALSE)
 }
 }

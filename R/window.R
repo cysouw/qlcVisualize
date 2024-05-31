@@ -2,7 +2,9 @@
 # turn polygons from "maps" into "owin" window for spatstat
 # ====================
 
-mapsToOwin <- function(country, database = "world2Hires") {
+mapsToOwin <- function(country, database = "world") {
+
+  .Deprecated("weightedMap")
 
   raw <- maps::map(database = database
                    , regions = country
@@ -17,7 +19,7 @@ mapsToOwin <- function(country, database = "world2Hires") {
 
   result <- list()
   for (i in 1:length(raw$names)) {
-    result[[i]] <-  coor[(cutoff[i]+1) : (cutoff[i+1]-1), ]
+    result[[i]] <-  coor[(cutoff[i+1]-1) : (cutoff[i]+1), ]
   }
   names(result) <- raw$names
 
@@ -29,6 +31,8 @@ mapsToOwin <- function(country, database = "world2Hires") {
 # ====================
 
 gadmToOwin <- function(country, sub = NULL, level = 0) {
+
+  .Deprecated("weightedMap")
 
   raw <- geodata::gadm(country = country, level = level, path = tempdir())
 
@@ -49,6 +53,8 @@ gadmToOwin <- function(country, sub = NULL, level = 0) {
 
 hullToOwin <- function(points, shift, alpha) {
 
+  .Deprecated("weightedMap")
+
   p <- rbind(   points + shift
                 , points - shift
                 , t(t(points) + c(shift, -shift))
@@ -60,7 +66,7 @@ hullToOwin <- function(points, shift, alpha) {
 
   # turn this into a "owin" window
   hull <- .ah2sp(hull)
-  hull <- polyCub::as.owin.SpatialPolygons(hull)
+  hull <- spatstat.geom::as.owin(sf::st_as_sf(hull))
 
   return(hull)
 }

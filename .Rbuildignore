@@ -4,4 +4,5 @@ cran-comments.md
 ^revdep/*
 ^CRAN-SUBMISSION$
 ^.github/*
-^CITATION.cff
+CITATION.cff
+^old/*

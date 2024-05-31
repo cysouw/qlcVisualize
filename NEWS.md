@@ -1,3 +1,11 @@
+# qlcVisualize 0.3 (upcoming)
+
+* completely rework vmap approach: new approach is weightedMap.
+* vmap, voronoi, mapsToOwin, gadmToOwin, hullToOwin are deprecated
+* renamed function limage to factorMap, the name limage is deprecated
+* function lmap is renamed to levelMap
+* shortened functions calls are available: lmap, fmap, wmap
+
 # qlcVisualize 0.2.1
 
 * bugfixes to get the package back on CRAN

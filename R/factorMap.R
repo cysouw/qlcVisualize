@@ -1,4 +1,4 @@
-limage <- function( x
+factorMap <- function( x
                   , order = NULL
                   , col = rainbow(4)
                   , show.remaining = FALSE
@@ -239,3 +239,12 @@ limage <- function( x
 
   }
 }
+
+# abbreviated function call
+fmap <- factorMap
+
+# old name deprecated
+limage <- function() {
+  .Deprecated("factorMap")
+}
+

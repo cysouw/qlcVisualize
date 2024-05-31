@@ -5,6 +5,8 @@
 
 voronoi <- function(points, window) {
 
+  .Deprecated("weightedMap")
+
   p <- spatstat.geom::ppp(points[,1], points[,2], window = window)
   v <- spatstat.geom::dirichlet(p)
 
@@ -46,6 +48,8 @@ voronoi <- function(points, window) {
 # ====================
 
 vmap <- function(tessellation, col = NULL, add = FALSE, outer.border = "black", border = "grey", lwd = 1, ...) {
+
+  .Deprecated("weightedMap")
 
 	if (!add) {
 		plot(0,0
