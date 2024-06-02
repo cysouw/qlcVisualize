@@ -117,7 +117,7 @@ groups <- rep("a", times = 157)
 groups[157] <- "b"
 groups[c(58,59)] <- "c"
 groups[c(101, 102, 107)] <- "d"
-v <- weightedMap(hessen$villages, grouping = groups, crs = 2397, maxit = 10)
+v <- weightedMap(hessen$villages, grouping = groups, crs = 2397, expansion = 4000, maxit = 10)
 plot(v$weightedVoronoi)
 
 \dontrun{
