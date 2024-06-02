@@ -43,9 +43,11 @@ Maximum number of iterations to find a suitable deformation. Paramter passed int
 }
 }
 \details{
-Internally, the Voronoi-tessellation is made without respecting the window, and only afterwards the window is superimposed on the tessellation. In some special circumstances this might (unfortunately) result in tiles containing parts of different polygons.
+Internally, the Voronoi-tessellation is made without respecting the window, and only afterwards the window is superimposed on the tessellation. In some circumstances with internal holes in the window provided, this might result in tiles containing multiple polygons across the internal holes.
 
 Warnings might be produced when coordinates lie outside the window provided. The results should still work, but without these points outside. Any colouring or other uses of the results have to be adapted accordingly by using the information in \code{$outsideWindow}.
+
+To deal with overlapping coordinates some jitter is automatically applied to the coordinates provided.
 }
 \value{
 List of various lengths, depending on specified parameters. Use the names to select any of these results:
@@ -76,6 +78,13 @@ Window after the weighting-deformation, specifed as a projected \code{sfc_MULTIP
 \item{weightedMap: }{
 Voronoi-tessellation after the weighting-deformation, specified as a projected \code{sfc_MULTIPOLYGON} object.
 }
+}
+\note{
+The \code{concaveman} algorithm that is used to induce a hull around the given points sometimes inexplicably excludes a point from the hull. This will result in an error \code{"arguments imply differing number of rows"}. When this occurs try again with \code{weights = NULL} and then run:
+
+\code{which(colSums(sf::st_intersects(map$voronoi, map$points, sparse = F))==0)}
+
+You will have to manually round the coordinates of the point(s) giving the error, apparently to about two decimals, then it might work again.
 }
 \author{
 Michael Cysouw <cysouw@mac.com>

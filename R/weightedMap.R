@@ -49,6 +49,7 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     colnames(x) <- c("X","Y")
     x <- sf::st_as_sf(x, coords=c("X", "Y"), crs = 4326)
     x <- sf::st_transform(x, crs)
+    x <- sf::st_jitter(x)
   }
 
   # prepare output
@@ -111,7 +112,6 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
         warning("Some polygons do not contain any points and are removed, see $emptyPolygons."
                 , call. = FALSE)
       }
-      window <- sf::st_union(window)
       # check for points outside of the window
       outside <- which(rowSums(filled) == 0)
       if (length(outside) > 0) {
@@ -146,17 +146,32 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
   # Voronoi
   # =======
 
-  # this is hocus-pocus!
-  v <- sf::st_voronoi(sf::st_union(x))
-  v <- sf::st_intersection(sf::st_cast(v), window)
-  v <- sf::st_join(x = sf::st_sf(v), y = x, join=sf::st_intersects)
-  v <- sf::st_cast(v, "MULTIPOLYGON")
-  # both union and voronoi do not keep the order, so reorder back
-  order <- unlist(sf::st_intersects(x, v))
-  v <- v[order,]
+  getVoronoi <- function(x, window) {
+    if (nrow(x) == 1) {
+      return(st_geometry(window))
+    } else {
+      # this is hocus-pocus!
+      v <- sf::st_voronoi(sf::st_union(x))
+      v <- sf::st_intersection(sf::st_cast(v), window)
+      v <- sf::st_join(x = sf::st_sf(v), y = x, join=sf::st_intersects)
+      v <- sf::st_cast(v, "MULTIPOLYGON")
+      # union of individual voronoi elements
+      v <- sapply(sf::st_geometry(v), sf::st_union, simplify = FALSE)
+      return(sf::st_sfc(v, crs = crs))
+    }
+  }
+
+  # combine separate voronoi parts into one geometry
+  distr <- sf::st_intersects(x, window, sparse = FALSE)
+  separate <- sapply(1:ncol(distr), function(i) {
+    getVoronoi(x[which(distr[,i] != 0),],window[i,])
+    }, simplify = FALSE)
+  combine <- do.call(c, separate)
+  order <- unlist(sf::st_intersects(x, combine))
+  combine <- combine[order,]
 
   # prepare output
-  result$voronoi <- sf::st_geometry(v)
+  result$voronoi <- combine
 
   # =========
   # Cartogram
