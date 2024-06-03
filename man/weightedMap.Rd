@@ -9,7 +9,7 @@ A weighted map ("wmap") is a combination of a Voronoi tesselation with cartogram
 }
 \usage{
 weightedMap(x, y = NULL, window = NULL, crs = NULL, weights = "equal",
-  grouping = NULL, concavity = 2, expansion = 1000, maxit = 5)
+  grouping = NULL, holes = NULL, concavity = 2, expansion = 1000, maxit = 5)
 }
 \arguments{
   \item{x}{
@@ -32,6 +32,9 @@ Vector with weights for the deformation of the Voronoi-tiles. Should have the sa
   \item{grouping}{
 Influence the form of the concave window around the coordinates. Only used when no \code{window} is provided. A vector with the same length as the number of coordinates, listing for each coordinate to which group it belongs. An attempt is made to make separate windows for each group. Note that a high value for the parameter \code{expansion} might result in overlap.
 }
+  \item{holes}{
+A list of \code{x,y} coordinates where holes should be inferred. When \code{window = NULL} there will be holes inserted inside the window that is produced from the points. This can also help to prevent voronoi polygons from spreading across twisted borders when a window is provided in the function call.
+}
   \item{concavity}{
 Influence the form of the concave window around the coordinates. Only used when no \code{window} is provided. Parameter passed internally to \code{concaveman} determining the concavity of the hull. High values result in more convex hulls. Low values (especially between 1 and 0) lead to highly concave ("wiggly") windows.
 }
@@ -43,9 +46,9 @@ Maximum number of iterations to find a suitable deformation. Paramter passed int
 }
 }
 \details{
-Internally, the Voronoi-tessellation is made without respecting the window, and only afterwards the window is superimposed on the tessellation. In some circumstances with internal holes in the window provided, this might result in tiles containing multiple polygons across the internal holes.
+Internally, the Voronoi-tessellation is made without respecting the window, and only afterwards the window is superimposed on the tessellation. In some circumstances with internal holes in the window provided, this might result in tiles containing multiple polygons across the internal holes. Try to specify some coordinates inside these holes in the option \code{holes}.
 
-Warnings might be produced when coordinates lie outside the window provided. The results should still work, but without these points outside. Any colouring or other uses of the results have to be adapted accordingly by using the information in \code{$outsideWindow}.
+Warnings might be produced when coordinates lie outside the window provided. The results should still work, but without these points outside. Any colouring or other uses of the results have to be adapted accordingly by using the information in \code{$outsideWindow}. Polygons without any points inside are likewise removed with a warning.
 
 To deal with overlapping coordinates some jitter is automatically applied to the coordinates provided.
 }
@@ -117,8 +120,11 @@ groups <- rep("a", times = 157)
 groups[157] <- "b"
 groups[c(58,59)] <- "c"
 groups[c(101, 102, 107)] <- "d"
-v <- weightedMap(hessen$villages, grouping = groups, crs = 2397, expansion = 4000, maxit = 10)
-plot(v$weightedVoronoi)
+# holes-list can be used to add holes inside the region
+holes <- list(c(9, 50.5), c(9.6, 51.3), c(8.9, 51))
+v <- weightedMap(hessen$villages, grouping = groups, holes = holes,
+                  crs = 2397, expansion = 3000, maxit = 10)
+plot(v$weightedVoronoi, col = "grey")
 
 \dontrun{
 # extensive example using data from WALS (https://wals.info). Both the worldmap

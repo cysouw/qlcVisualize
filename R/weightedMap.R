@@ -1,5 +1,5 @@
 weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
-                            weights = "equal", grouping = NULL,
+                            weights = "equal", grouping = NULL, holes = NULL,
                             concavity = 2, expansion = 1000, maxit = 5) {
 
   # ===
@@ -86,6 +86,28 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     return(w)
   }
 
+  addHole <- function(point, window) {
+    # project point
+    point <- sf::st_sfc(sf::st_point(point), crs = 4326)
+    point <- sf::st_transform(point, crs = crs)
+    # combine with other points
+    coor <- sf::st_coordinates(x)
+    coor <- rbind(sf::st_coordinates(point), coor)
+    # make triangulation
+    points <- suppressWarnings(spatstat.geom:::ppp(coor[,1], coor[,2],
+                                                   window = spatstat.geom::as.owin(window)))
+    dist <- spatstat.geom::delaunayDistance(points)
+    # make hole aroung point
+    hole <- spatstat.geom::convexhull.xy(coor[which(dist[1,] ==  1),])
+    hole <- sf::st_as_sfc(hole)
+    sf::st_crs(hole) <- crs
+    hole <- sf::st_buffer(hole, -2*expansion)
+    hole <- sf::st_buffer(hole, expansion)
+    # add hole to window
+    window <- sf::st_sfc(sf::st_difference(window, hole))
+    return(window)
+  }
+
   # ======
   # Window
   # ======
@@ -137,6 +159,12 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
       window <- sf::st_sfc(sapply(window, sf::st_geometry))
       sf::st_crs(window) <- crs
     }
+    # add holes
+    if (!is.null(holes)) {
+      for (hole in holes) {
+        window <- addHole(hole, window)
+      }
+    }
   }
 
   # prepare output
@@ -148,7 +176,7 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
 
   getVoronoi <- function(x, window) {
     if (nrow(x) == 1) {
-      return(st_geometry(window))
+      return(sf::st_geometry(window))
     } else {
       # this is hocus-pocus!
       v <- sf::st_voronoi(sf::st_union(x))
