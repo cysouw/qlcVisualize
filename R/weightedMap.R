@@ -94,7 +94,7 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     coor <- sf::st_coordinates(x)
     coor <- rbind(sf::st_coordinates(point), coor)
     # make triangulation
-    points <- suppressWarnings(spatstat.geom:::ppp(coor[,1], coor[,2],
+    points <- suppressWarnings(spatstat.geom::ppp(coor[,1], coor[,2],
                                                    window = spatstat.geom::as.owin(window)))
     dist <- spatstat.geom::delaunayDistance(points)
     # make hole aroung point
