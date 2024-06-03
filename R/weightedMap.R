@@ -161,17 +161,21 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     }
   }
 
-  # combine separate voronoi parts into one geometry
-  distr <- sf::st_intersects(x, window, sparse = FALSE)
-  separate <- sapply(1:ncol(distr), function(i) {
-    getVoronoi(x[which(distr[,i] != 0),],window[i,])
-    }, simplify = FALSE)
-  combine <- do.call(c, separate)
-  order <- unlist(sf::st_intersects(x, combine))
-  combine <- combine[order,]
+  if (length(window) == 1) {
+    voronoi <- getVoronoi(x, window)
+  } else {
+    # combine separate voronoi parts into one geometry
+    distr <- sf::st_intersects(x, window, sparse = FALSE)
+    separate <- sapply(1:ncol(distr), function(i) {
+      getVoronoi(x[which(distr[,i] != 0),],window[i,])
+      }, simplify = FALSE)
+    combine <- do.call(c, separate)
+    order <- unlist(sf::st_intersects(x, combine))
+    voronoi <- combine[order,]
+  }
 
   # prepare output
-  result$voronoi <- combine
+  result$voronoi <- voronoi
 
   # =========
   # Cartogram
