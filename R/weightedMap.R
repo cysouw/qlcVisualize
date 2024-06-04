@@ -95,7 +95,7 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     coor <- rbind(sf::st_coordinates(point), coor)
     # make triangulation
     points <- suppressWarnings(spatstat.geom::ppp(coor[,1], coor[,2],
-                                                   window = spatstat.geom::as.owin(window)))
+                                window = spatstat.geom::as.owin(window)))
     dist <- spatstat.geom::delaunayDistance(points)
     # make hole aroung point
     hole <- spatstat.geom::convexhull.xy(coor[which(dist[1,] ==  1),])
@@ -197,10 +197,11 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     separate <- sapply(1:ncol(distr), function(i) {
       getVoronoi(x[which(distr[,i] != 0),],window[i,])
       }, simplify = FALSE)
-    combine <- do.call(c, separate)
-    order <- unlist(sf::st_intersects(x, combine))
-    voronoi <- combine[order,]
+    voronoi <- do.call(c, separate)
   }
+  # get voronoi in right order
+  order <- unlist(sf::st_intersects(x, voronoi))
+  voronoi <- voronoi[order,]
 
   # prepare output
   result$voronoi <- voronoi
