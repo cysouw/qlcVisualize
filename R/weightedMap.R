@@ -86,28 +86,6 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     return(w)
   }
 
-  addHole <- function(point, window) {
-    # project point
-    point <- sf::st_sfc(sf::st_point(point), crs = 4326)
-    point <- sf::st_transform(point, crs = crs)
-    # combine with other points
-    coor <- sf::st_coordinates(x)
-    coor <- rbind(sf::st_coordinates(point), coor)
-    # make triangulation
-    points <- suppressWarnings(spatstat.geom::ppp(coor[,1], coor[,2],
-                                window = spatstat.geom::as.owin(window)))
-    dist <- spatstat.geom::delaunayDistance(points)
-    # make hole aroung point
-    hole <- spatstat.geom::convexhull.xy(coor[which(dist[1,] ==  1),])
-    hole <- sf::st_as_sfc(hole)
-    sf::st_crs(hole) <- crs
-    hole <- sf::st_buffer(hole, -2*expansion)
-    hole <- sf::st_buffer(hole, expansion)
-    # add hole to window
-    window <- sf::st_sfc(sf::st_difference(window, hole))
-    return(window)
-  }
-
   # ======
   # Window
   # ======
@@ -159,11 +137,40 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
       window <- sf::st_sfc(sapply(window, sf::st_geometry))
       sf::st_crs(window) <- crs
     }
+
     # add holes
     if (!is.null(holes)) {
-      for (hole in holes) {
-        window <- addHole(hole, window)
+      # combine points for holes
+      points <- do.call(rbind, holes)
+      points <- sf::st_multipoint(points)
+      points <- sf::st_sfc(points, crs = 4326)
+      points <- sf::st_cast(points, "POINT")
+      # project points
+      points <- sf::st_transform(points, crs = crs)
+      # combine with other points
+      coor <- sf::st_coordinates(x)
+      coor <- rbind(sf::st_coordinates(points), coor)
+      # get closest points
+      points <- suppressWarnings(spatstat.geom::ppp(coor[,1], coor[,2],
+                                               window = spatstat.geom::as.owin(window)))
+      dist <- spatstat.geom::delaunayDistance(points)
+
+      # make holes around closest points
+      makeHole <- function(point) {
+        hole <- spatstat.geom::convexhull.xy(coor[which(dist[point,] ==  1),])
+        hole <- sf::st_as_sfc(hole)
+        sf::st_crs(hole) <- crs
+        hole <- sf::st_buffer(hole, -2*expansion)
+        hole <- sf::st_buffer(hole, expansion)
+        return(hole)
       }
+
+      # combine holes with window
+      allHoles <- sapply(1:length(holes), makeHole)
+      allHoles <- do.call(c, allHoles)
+      allHoles <-  sf::st_sfc(sf::st_union(sf::st_make_valid(allHoles)))
+      sf::st_crs(allHoles) <- crs
+      window <- sf::st_sfc(sf::st_difference(window, allHoles))
     }
   }
 

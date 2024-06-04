@@ -33,7 +33,7 @@ Vector with weights for the deformation of the Voronoi-tiles. Should have the sa
 Influence the form of the concave window around the coordinates. Only used when no \code{window} is provided. A vector with the same length as the number of coordinates, listing for each coordinate to which group it belongs. An attempt is made to make separate windows for each group. Note that a high value for the parameter \code{expansion} might result in overlap.
 }
   \item{holes}{
-A list of \code{x,y} coordinates where holes should be inferred. When \code{window = NULL} there will be holes inserted inside the window that is produced from the points. This can also help to prevent voronoi polygons from spreading across twisted borders when a window is provided in the function call.
+A list of \code{x,y} coordinates where holes should be inferred. When \code{window = NULL} there will be holes inserted inside the window around the coordinates specified within a distance as specified in \code{expansion} from the nearest points around the coordinates.
 }
   \item{concavity}{
 Influence the form of the concave window around the coordinates. Only used when no \code{window} is provided. Parameter passed internally to \code{concaveman} determining the concavity of the hull. High values result in more convex hulls. Low values (especially between 1 and 0) lead to highly concave ("wiggly") windows.
