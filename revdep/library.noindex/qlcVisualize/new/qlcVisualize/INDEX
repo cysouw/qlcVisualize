@@ -1,17 +1,18 @@
-boundary                Checking boundary parameters vor plotting of
-                        'lmap'
+boundary                Checking boundary parameters for plotting of
+                        'levelMap'
 dialects                Multiple correspondences of "f"-like sounds in
                         German Dialects
+factorMap               Visualising nominal data with various factors.
 haspelmath              Data about indefinite constructions in 39
                         different languages
 heeringa                Heeringa-style colours
 hessen                  Extract from the SyHD Project on the syntax of
                         the dialect of Hessen (Germany)
 hullToOwin              Producing windows of class "owin"
-limage                  Drawing multi-level images for visualisation of
-                        nominal data with various levels.
-lmap                    Drawing multi-level maps (e.g. semantic maps or
+levelMap                Drawing multi-level maps (e.g. semantic maps or
                         linguistic isoglosses)
 qlcVisualize-package    Visualizations for Quantitative Language
                         Comparison
 vmap                    Plotting a Voronoi-map ("v-map")
+weightedMap             Construct weighted map using Voronoi
+                        tessellation and cartogram weighting

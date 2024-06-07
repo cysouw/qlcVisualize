@@ -95,8 +95,9 @@ Michael Cysouw <cysouw@mac.com>
 \examples{
 # generate a window from coordinates
 # note the Germany-centered Gauss-Kruger projection "EPSG:2397"
+# consider increasing 'maxit' to remove the warning about convergence
 data(hessen)
-v <- weightedMap(hessen$villages, expansion = 4000, crs = 2397, maxit = 10)
+v <- weightedMap(hessen$villages, expansion = 4000, crs = 2397, maxit = 3)
 plot(v$weightedVoronoi)
 
 # show the original locations before the transformation in orange
@@ -123,7 +124,7 @@ groups[c(101, 102, 107)] <- "d"
 # holes-list can be used to add holes inside the region
 holes <- list(c(9, 50.5), c(9.6, 51.3), c(8.9, 51))
 v <- weightedMap(hessen$villages, grouping = groups, holes = holes,
-                  crs = 2397, expansion = 3000, maxit = 10)
+                  crs = 2397, expansion = 3000, maxit = 3)
 plot(v$weightedVoronoi, col = "grey")
 
 \dontrun{

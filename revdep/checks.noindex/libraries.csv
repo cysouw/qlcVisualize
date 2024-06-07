@@ -1,2 +1,3 @@
 package,old,new,delta
-qlcVisualize,NA,0.2.1,*
+qlcVisualize,NA,0.3,*
+DBI,NA,1.2.3,*
