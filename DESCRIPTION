@@ -16,6 +16,6 @@ Authors@R:
 License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
-Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, spatstat.random, 
-  maps, mapplots, methods, sp, sf, alphahull, RSpectra, concaveman, cartogramR
+Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, spatstat.random, maps, 
+  mapplots, geodata, methods, sp, sf, alphahull, RSpectra, concaveman, cartogramR
 Suggests: rnaturalearth, mapdata, lingtypology

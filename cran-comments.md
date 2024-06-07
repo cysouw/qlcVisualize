@@ -11,12 +11,7 @@ of failing convergence of the function 'weightedMap'.
 
 There is an S3 conflict between two dependencies: both the package "sf" and
 the package "seriation" appear to overwrite the method 'print.registry_field'
-from 'proxy'. I have removed "seriation" from the NAMESPACE to preclude this
-warning on install.
-
-The dependency "geodata" gives a warning because it is currently not on CRAN.
-However, the developer is actively submitting updates, so I assume this warning 
-to be gone any moment now.
+from 'proxy'.
 
 ## Test environments
 
