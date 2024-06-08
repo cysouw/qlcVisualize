@@ -15,15 +15,15 @@ authors:
     affiliation: Philipps Universität Marburg
 repository-code: 'https://github.com/cysouw/qlcVisualize'
 abstract: >-
-  A collection of visualizations made for quantitative language comparison,
-  but possibly also of interest to other fields. Currently implemented are
-  visualisations dealing nominal data with multiple levels ("level-map" and
-  "level-image"), and some utility functions for making geographic Voronoi maps.
+  Collection of visualizations as used in quantitative language
+  comparison. Currently implemented are visualisations dealing nominal data with
+  multiple levels ("level map" and "factor map"), and assistance for making
+  weighted geographical Voronoi maps ("weighted map").
 keywords:
   - linguistics
   - language comparison
   - visualization
   - geographical maps
 license: GPL-3.0
-version: v0.2.1
-date-released: '2024-05-09'
+version: v0.3
+date-released: '2024-06-09'
