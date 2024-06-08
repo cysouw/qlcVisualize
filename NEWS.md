@@ -1,4 +1,4 @@
-# qlcVisualize 0.3 (upcoming)
+# qlcVisualize 0.3
 
 * completely rework vmap approach: new approach is weightedMap.
 * vmap, voronoi, mapsToOwin, gadmToOwin, hullToOwin are deprecated
