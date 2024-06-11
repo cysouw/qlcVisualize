@@ -13,9 +13,11 @@ Authors@R:
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0003-3168-4946")
   )
+URL: https://github.com/cysouw/qlcVisualize
+BugReports: https://github.com/cysouw/qlcVisualize/issues
 License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
 Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, spatstat.random, maps, 
-  mapplots, geodata, methods, sp, sf, alphahull, RSpectra, concaveman, cartogramR
+  mapplots, geodata, sp, sf, alphahull, RSpectra, concaveman, cartogramR
 Suggests: rnaturalearth, mapdata, lingtypology
