@@ -97,7 +97,7 @@ Michael Cysouw <cysouw@mac.com>
 # note the Germany-centered Gauss-Kruger projection "EPSG:2397"
 # consider increasing 'maxit' to remove the warning about convergence
 data(hessen)
-v <- weightedMap(hessen$villages, expansion = 4000, crs = 2397, maxit = 3)
+v <- weightedMap(hessen$villages, expansion = 4000, crs = 2397, maxit = 2)
 plot(v$weightedVoronoi)
 
 # show the original locations before the transformation in orange
@@ -124,7 +124,7 @@ groups[c(101, 102, 107)] <- "d"
 # holes-list can be used to add holes inside the region
 holes <- list(c(9, 50.5), c(9.6, 51.3), c(8.9, 51))
 v <- weightedMap(hessen$villages, grouping = groups, holes = holes,
-                  crs = 2397, expansion = 3000, maxit = 3)
+                  crs = 2397, expansion = 3000, maxit = 2)
 plot(v$weightedVoronoi, col = "grey")
 
 \dontrun{
@@ -150,7 +150,7 @@ mollweide_pacific <- "+proj=moll +lon_0=162"
 # calculate an equally-weighted voronoi transformation
 # higher maxit improve the map, but might take very long
 v <- weightedMap(w13$longitude, w13$latitude, window = window,
-                      maxit = 3, crs = mollweide_atlantic)
+                      maxit = 2, crs = mollweide_atlantic)
 
 # some coordinates from WALS lie outside land-area, just ignore them for now
 feature13 <- w13$`13A`[-v$outsideWindow]

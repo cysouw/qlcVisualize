@@ -7,8 +7,16 @@
   CRAN repository db overrides:
     X-CRAN-Comment: Archived on 2024-05-27 as requires archived package
       'geodata'.
-      
-  (NOTE: Package 'geodata' is back on CRAN)
+
+## Comments on automatic incoming checks
+
+- Package 'geodata' is back on CRAN
+- The spelling of "Voronoi" is correct
+- Reference to package "deldir" is removed in Rd
+- I have reduced the examples to an absolute minimum running time. 
+
+Note: There are various individual examples that each cannot be reduced further. 
+I could only reduce the time by removing examples, which I would rather not do.
 
 ## Changes
 
