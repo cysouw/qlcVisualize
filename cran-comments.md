@@ -1,4 +1,14 @@
-## qlcVisualize, version 0.3
+# qlcVisualize, version 0.3
+
+  New submission
+  
+  Package was archived on CRAN
+  
+  CRAN repository db overrides:
+    X-CRAN-Comment: Archived on 2024-05-27 as requires archived package
+      'geodata'.
+
+## Changes
 
 - Update to move towards library 'sf' for geographic routines
 - Deprecating various functions that rely on outdated functions
@@ -15,12 +25,13 @@ from 'proxy'.
 
 ## Test environments
 
-- local macOS X 14.5, R version 4.4.0
+- devtools::check(remote = TRUE, manual = TRUE) on local macOS 14.5 install, R version 4.4.0
+- devtools::check_win_devel() for Windows on r-devel
 - rhub::rhub_check() for Linux, Windows and old macOS
 
 ## R CMD check results
 
-There were 0 errors, 1 warning, 0 notes
+There were 0 errors, 0 warning, 1 notes
 
 ## Downstream dependencies
 
