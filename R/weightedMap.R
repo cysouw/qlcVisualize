@@ -222,7 +222,7 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     if (length(weights) ==  1 && weights == "equal") {
       # default to equally-sized polygons
       weights <- rep(1, times = nrow(x))
-    } else if (!is.null(window) && length(outside > 0)) {
+    } else if (!is.null(window) && exists("outside") && length(outside > 0)) {
       # possibly remove weights for points outside window
       weights <- weights[-outside]
     }
