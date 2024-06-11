@@ -7,6 +7,8 @@
   CRAN repository db overrides:
     X-CRAN-Comment: Archived on 2024-05-27 as requires archived package
       'geodata'.
+      
+  (NOTE: Package 'geodata' is back on CRAN)
 
 ## Changes
 
@@ -32,6 +34,9 @@ from 'proxy'.
 ## R CMD check results
 
 There were 0 errors, 0 warning, 1 notes
+
+\donttest examples in the Rd of 'weightedMap' gives a warning to the user, 
+which is intentional as an example to the functionality.
 
 ## Downstream dependencies
 
