@@ -1,3 +1,8 @@
+#qlcVisulize 0.4 (upcoming)
+
+* catch unexplicable failing of concaveman
+* various bugfixes
+
 # qlcVisualize 0.3
 
 * completely rework vmap approach: new approach is weightedMap.

@@ -82,6 +82,14 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
       w <- sf::st_buffer(line, dist = expansion)
     } else {
       w <- getConcaveWindow(x[ids,])
+      # test window: unexplicably sometimes a point falls outside
+      filled <- sf::st_intersects(x[ids,], w, sparse = FALSE)
+      # solution: just try again
+      while (min(rowSums(filled)) == 0) {
+        x <- sf::st_jitter(x)
+        w <- getConcaveWindow(x[ids,])
+        filled <- sf::st_intersects(x[ids,], w, sparse = FALSE)
+      }
     }
     return(w)
   }
@@ -130,6 +138,13 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     if (is.null(grouping)) {
       # no grouping: a single window around all points
       window <- getConcaveWindow(x)
+      # test window: unexplicably sometimes a point falls outside
+      filled <- sf::st_intersects(x, window, sparse = FALSE)
+      while (min(rowSums(filled)) == 0) {
+        x <- sf::st_jitter(x)
+        window <- getConcaveWindow(x)
+        filled <- sf::st_intersects(x, window, sparse = FALSE)
+      }
     } else {
       # various windows for groups in grouping vector
       groups <- names(table(grouping))
