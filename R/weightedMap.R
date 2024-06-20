@@ -1,5 +1,6 @@
 weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
-                            weights = "equal", grouping = NULL, holes = NULL,
+                            weights = "equal", regularize = TRUE,
+                            grouping = NULL, holes = NULL,
                             concavity = 2, expansion = 1000, maxit = 5) {
 
   # ===
@@ -211,19 +212,24 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     }
   }
 
-  if (length(window) == 1) {
-    voronoi <- getVoronoi(x, window)
-  } else {
-    # combine separate voronoi parts into one geometry
-    distr <- sf::st_intersects(x, window, sparse = FALSE)
-    separate <- sapply(1:ncol(distr), function(i) {
-      getVoronoi(x[which(distr[,i] != 0),],window[i,])
-      }, simplify = FALSE)
-    voronoi <- do.call(c, separate)
+  makeVoronoi <- function(x, window) {
+    if (length(window) == 1) {
+      voronoi <- getVoronoi(x, window)
+    } else {
+      # combine separate voronoi parts into one geometry
+      distr <- sf::st_intersects(x, window, sparse = FALSE)
+      separate <- sapply(1:ncol(distr), function(i) {
+        getVoronoi(x[which(distr[,i] != 0),],window[i,])
+        }, simplify = FALSE)
+      voronoi <- do.call(c, separate)
+    }
+    # get voronoi in right order
+    order <- unlist(sf::st_intersects(x, voronoi))
+    voronoi <- voronoi[order,]
+    return(voronoi)
   }
-  # get voronoi in right order
-  order <- unlist(sf::st_intersects(x, voronoi))
-  voronoi <- voronoi[order,]
+
+  voronoi <- makeVoronoi(x, window)
 
   # prepare output
   result$voronoi <- voronoi
@@ -256,6 +262,21 @@ weightedMap <- function(x, y = NULL, window = NULL, crs = NULL,
     result$weightedPoints <- new_points
     result$weightedWindow <- new_window
     result$weightedVoronoi <- sf::st_cast(valid_carto, "MULTIPOLYGON")
+  }
+
+  # ==========
+  # Regularize
+  # ==========
+
+  if (regularize) {
+
+    # do voronoi again on weighted points
+    window <- sf::st_sf(new_window)
+    x <- sf::st_sf(new_points)
+    regularVoronoi <- makeVoronoi(x, window)
+
+    # replace output
+    result$weightedVoronoi <- regularVoronoi
   }
 
   return(result)

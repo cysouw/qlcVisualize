@@ -8,7 +8,7 @@ Construct weighted map using Voronoi tessellation and cartogram weighting
 A weighted map ("wmap") is a combination of a Voronoi tesselation with cartogram weighting. A Voronoi map is a tessellation of a surface based on a set of geographic points. It is used to display areal patterns without overlap. Additionally, the size of the tiles can be weighted by cartogram-deformation to allow for varying the visual impression of the data. Specifically, this allows for equal-area-sized tiles to equally represent all data-points in the visual display.
 }
 \usage{
-weightedMap(x, y = NULL, window = NULL, crs = NULL, weights = "equal",
+weightedMap(x, y = NULL, window = NULL, crs = NULL, weights = "equal", regularize = TRUE,
   grouping = NULL, holes = NULL, concavity = 2, expansion = 1000, maxit = 5)
 }
 \arguments{
@@ -29,6 +29,9 @@ Coordinate reference system that is necessary for the projection of the map. Whe
   \item{weights}{
 Vector with weights for the deformation of the Voronoi-tiles. Should have the same length as the number of coordinates provided. The weights are passed to \code{cartogramR} to perform the deformation. Defaults to \code{"equal"} for equal-area tiles. When \code{NULL} no weighting is performed, but a non-weighted Voronoi-map is still produced.
 }
+  \item{regularize}{
+Often the output of the deformation contains very pointed polygons. When `regularize = TRUE` (by default) an attempt is made to make them more 'round' again. This add yet another deformation, partially counteracting the intended weighting. If accurate weighting is more important than the visual impression, consider setting this to `FALSE` (and increase `maxit` to get a good fit to the actual weights).
+  }
   \item{grouping}{
 Influence the form of the concave window around the coordinates. Only used when no \code{window} is provided. A vector with the same length as the number of coordinates, listing for each coordinate to which group it belongs. An attempt is made to make separate windows for each group. Note that a high value for the parameter \code{expansion} might result in overlap.
 }

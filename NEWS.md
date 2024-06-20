@@ -1,6 +1,7 @@
-#qlcVisulize 0.4 (upcoming)
+# qlcVisualize 0.4 (upcoming)
 
-* catch unexplicable failing of concaveman
+* adding option to regularize a weightedMap
+* catch erratic and unexplicable failing of concaveman
 * various bugfixes
 
 # qlcVisualize 0.3

@@ -19,5 +19,5 @@ License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
 Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, spatstat.random, maps, 
-  mapplots, geodata, sp, sf, alphahull, RSpectra, concaveman, cartogramR
+  mapplots, geodata, sp, sf, alphahull, RSpectra, concaveman, cartogramR, methods
 Suggests: rnaturalearth, mapdata, lingtypology
