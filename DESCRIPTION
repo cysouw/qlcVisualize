@@ -4,8 +4,8 @@ Description: Collection of visualizations as used in quantitative language
   comparison. Currently implemented are visualisations dealing nominal data with 
   multiple levels ("level map" and "factor map"), and assistance for making 
   weighted geographical Voronoi-maps ("weighted map").
-Version: 0.3
-Date: 2024-06-07
+Version: 0.4
+Date: 2024-31-07
 Authors@R:
   person(
     "Michael", "Cysouw", 
@@ -18,6 +18,7 @@ BugReports: https://github.com/cysouw/qlcVisualize/issues
 License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
-Imports: fields, MASS, qlcMatrix, seriation, spatstat.geom, spatstat.random, maps, 
-  mapplots, geodata, sp, sf, alphahull, RSpectra, concaveman, cartogramR, methods
+Imports: alphahull, automap, cartogramR, concaveman, fields, geodata, gstat, 
+  mapplots, maps, MASS, methods, qlcMatrix, RSpectra, seriation, sf, sp, 
+  spatstat.geom, spatstat.random, stars
 Suggests: rnaturalearth, mapdata, lingtypology

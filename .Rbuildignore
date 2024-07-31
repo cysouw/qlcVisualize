@@ -6,3 +6,4 @@ cran-comments.md
 ^.github/*
 CITATION.cff
 ^not_used/*
+^data_raw/*

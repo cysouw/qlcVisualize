@@ -46,7 +46,7 @@ boundary <- function(points
     title(xlab = paste( "density =", density
                       , "grid =", grid
                       , "\nbox.offset = ", box.offset
-                      , "tighness = ", round(tightness, 1)
+                      , "tightness = ", round(tightness, 1)
                       ), col = "grey", cex = 0.5)
     contour(k, add = TRUE)
     contour(k, level = density, col = "red", add = TRUE)

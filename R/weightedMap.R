@@ -1,98 +1,38 @@
 weightedMap <- function(x, y = NULL, window = NULL, crs = NULL, weights = "equal",
-                        grouping = NULL, holes = NULL, add_out = FALSE,
-                        concavity = 2, expansion = 1e3, maxit = 10, method = "dcn") {
+                        grouping = NULL, holes = NULL, concavity = 2, expansion = 1000,
+                        method = "dcn", maxit = 10, verbose = 0) {
 
+  # prepare result
+  result <- list()
   # set crs
-  crs <- .setCRS(x, window, crs)
+  result <- .setCRS(result, x, window, crs)
   # set points to proper sf format
-  x <- .setPoints(x, y, crs)
-  # prepare output
-  result <- list(points = sf::st_geometry(x))
-
-  # -----------
+  result <- .setPoints(result, x, y)
+  # set grouping
+  result <- .setGrouping(result, grouping)
   # prepare window
-  if (!is.null(window)) {
-    # set provided window to proper sf format
-    window <- .setWindow(window, crs)
-    # check intersection of points and window
-    filled <- sf::st_intersects(x, window, sparse = FALSE)
-    # remove polygons from window that have no points
-    empty <- which(colSums(filled) == 0)
-    if (length(empty) > 0) {
-      window <- window[-empty, ]
-      # add to output
-      result$emptyPolygons <- empty
-      warning(
-        "Some polygons do not contain any points and are removed, see $emptyPolygons.",
-        call. = FALSE
-        )
-    }
-    # remove points outside of the window
-    outside <- which(rowSums(filled) == 0)
-    if (length(outside) > 0) {
-      if (add_out) {
-        added <- .makeWindow(x[outside,], 1:length(outside), 1, 3*expansion, crs)
-        added <- sf::st_cast(added, "MULTIPOLYGON")
-        window <- sf::st_sf(geometry = c(window$geometry, added))
-      } else {
-        x <- x[-outside,]
-        # add to output
-        result$outsideWindow <- outside
-        warning(
-          "Some points lie outside of the window and are ignored, see $outsideWindow.",
-          call. = FALSE
-        )
-      }
-    }
-    # make grouping from provided window
-    grouping <- unlist(sf::st_intersects(x, window))
-  } else {
+  if (is.null(window)) {
     # without provided window, make new window around points
-    # optionally using grouping
-    if (is.null(grouping)) {
-      grouping <- rep("1", times = nrow(x))
-    }
-    window <- .makeWindow(x, grouping, concavity, expansion, crs)
+    result <- .makeWindow(result, concavity, expansion)
     # add holes inside window
     if (!is.null(holes)) {
-      window <- .addHoles(x, window, holes, expansion, crs)
+      result <- .makeHoles(result, holes, expansion)
     }
+  } else {
+    # set provided window to proper sf format
+    result <- .setWindow(result, window)
+    # check window for empty polygons and outside points
+    result <- .checkWindow(result)
   }
-  # add window and grouping to output
-  result$window <- sf::st_union(window)
-  result$grouping <- grouping
-
-  # ------------
   # make voronoi
-  voronoi <- .makeVoronoi(x, window, crs)
-  # add voronoi to output
-  result$voronoi <- voronoi
-
-  # --------------
+  result <- .makeVoronoi(result)
   # make cartogram, but only when weights are provided
   if (!is.null(weights)) {
     # prepare weights
-    if (length(weights) ==  1 && weights == "equal") {
-      # default to equally-sized polygons
-      weights <- rep(1, times = nrow(x))
-    } else if (!is.null(window) && exists("outside") && length(outside > 0)) {
-      # remove weights for points outside window
-      weights <- weights[-outside]
-    }
-    # add weights to output
-    result$weights = weights
-    # make cartogram
-    carto <- .makeCarto(x, voronoi, weights, window, grouping, maxit = maxit, method = method, crs)
-    # repeat voronoi to regularize map
-    voronoi <- .makeVoronoi(carto$centers, carto$polygons, crs)
-    if (!is.null(carto$outside)) {
-      weights <- weights[-carto$outside]
-    }
-    # add weighted map to output
-    result$weightedPoints <- sf::st_geometry(carto$centers)
-    result$weightedWindow <- sf::st_union(carto$polygons)
-    result$weightedVoronoi <- voronoi # sf::st_cast(carto$polygons, "MULTIPOLYGON")
-    result$problems <- carto$outside
+    result = .setWeights(result, weights)
+    # make cartogram, first round just to prevent errors
+    result <- .makeCarto(result, method = "dcn", maxit = 2, verbose = 0)
+    result <- .makeCarto(result, method, maxit, verbose)
   }
   return(result)
 }
@@ -104,7 +44,7 @@ wmap <- weightedMap
 # setCRS
 # ======
 
-.setCRS <- function(x, window, crs) {
+.setCRS <- function(result, x, window, crs) {
   if (!is.null(crs)) {
     # use crs provided in call
     crs <- sf::st_crs(crs)
@@ -135,32 +75,51 @@ wmap <- weightedMap
       crs <- crs_window
     }
   }
-  return(crs)
+  result$crs <- crs
+  return(result)
 }
 
 # =========
 # setPoints
 # =========
 
-.setPoints <- function(x, y ,crs) {
+.setPoints <- function(result, x, y) {
   if (!is.null(y)) {
     # combine x and y values
     x <- data.frame(x, y)
   }
-  if (!is(x, "sf")) {
+  if (!is(x, "sf") && !is(x, "sfc")) {
     # turn coordinates into sf
     colnames(x) <- c("X","Y")
     x <- sf::st_as_sf(x, coords=c("X", "Y"), crs = 4326)
-    x <- sf::st_transform(x, crs)
-    x <- sf::st_jitter(x, factor = 10e-8)
   }
+  if (is(st_geometry(x),"sfc_POINT")) {
+    x <- sf::st_transform(x, result$crs)
+    x <- sf::st_jitter(x, factor = 1e-8)
+    result$points <- sf::st_geometry(x)
+  } else {
+    stop("cannot interpret x as coordinates")
+  }
+  return(result)
+}
+
+# ===========
+# setGrouping
+# ===========
+
+.setGrouping <- function(result, grouping) {
+  if (is.null(grouping)) {
+    grouping <- rep("1", times = length(result$points))
+  }
+  result$grouping <- as.character(grouping)
+  return(result)
 }
 
 # =========
 # setWindow
 # =========
 
-.setWindow <- function(window, crs) {
+.setWindow <- function(result, window) {
   # try to convert window from spatstat::owin
   if (is(window, "owin") | is(window, "SpatVector") | is(window, "Spatial")) {
     window <- sf::st_as_sf(window)
@@ -168,60 +127,97 @@ wmap <- weightedMap
       sf::st_crs(window) <- 4326
     }
   }
-  if (is(window, "sf")) {
+  if (is(window, "sf") || is(window, "sfc")) {
     # make valid window
     window <- sf::st_make_valid(sf::st_set_precision(window, 1e6))
-    window <- sf::st_transform(window, crs)
+    window <- sf::st_transform(window, result$crs)
+    window <- sf::st_make_valid(window)
     window <- sf::st_cast(window, "MULTIPOLYGON")
   } else {
     stop("Provided window cannot be interpreted: try to use sf format")
   }
-  return(window)
+  result$window <- sf::st_geometry(window)
+  return(result)
+}
+
+.checkWindow <- function(result) {
+  # check intersection of points and window
+  filled <- sf::st_intersects(result$points, result$window, sparse = FALSE)
+  # remove polygons from window that have no points
+  empty <- which(colSums(filled) == 0)
+  if (length(empty) > 0) {
+    # new window
+    result$window <- result$window[-empty]
+    # add removed indices to output
+    result$emptyPolygons <- empty
+    warning(
+      "Some polygons do not contain any points and are removed, see $emptyPolygons.",
+      call. = FALSE
+    )
+  }
+  # remove points outside of the window
+  outside <- which(rowSums(filled) == 0)
+  if (length(outside) > 0) {
+    # new points
+    result$points <- result$points[-outside]
+    # add to output
+    result$outsideWindow <- outside
+    warning(
+      "Some points lie outside of the window and are ignored, see $outsideWindow.",
+      call. = FALSE
+    )
+  }
+  # make grouping of points from provided window
+  #filled <- sf::st_intersects(result$points, result$window)
+  result$grouping <- as.character(unlist(apply(filled, 1, which)))
+  return(result)
 }
 
 # ==========
 # makeWindow
 # ==========
 
-.makeWindow <- function(x, grouping, concavity, expansion, crs) {
+.makeWindow <- function(result, concavity, expansion) {
   # construct various windows for groups in grouping vector
-  groups <- names(table(grouping))
-  window <- sapply(groups, .getWindow, grouping = grouping, x = x
-                   , concavity = concavity, expansion = expansion
-                   , crs = crs, simplify = FALSE
+  groups <- names(table(result$grouping))
+  window <- sapply(groups, .getWindow
+                   , grouping = result$grouping
+                   , points = result$points
+                   , concavity = concavity
+                   , expansion = expansion
+                   , crs = result$crs
+                   , simplify = FALSE
   )
-  window <- sf::st_sfc(sapply(window, sf::st_geometry))
-  sf::st_crs(window) <- crs
-  return(window)
+  result$window <- sf::st_sfc(sapply(window, sf::st_geometry), crs = result$crs)
+  return(result)
 }
 
-.getWindow <- function(group, grouping, x, concavity, expansion, crs) {
+.getWindow <- function(group, grouping, points, concavity, expansion, crs) {
   ids <- which(grouping == group)
   if (length(ids) == 1) {
     # circle
-    w <- sf::st_geometry(sf::st_buffer(x[ids,], dist = expansion))
+    w <- sf::st_geometry(sf::st_buffer(points[ids], dist = expansion))
   } else if (length(ids) == 2) {
     # squirkle
-    line <- sf::st_cast(sf::st_combine(x[ids,]), "LINESTRING")
+    line <- sf::st_cast(sf::st_combine(points[ids]), "LINESTRING")
     w <- sf::st_buffer(line, dist = expansion)
   } else {
     # concave window
-    w <- .getConcaveWindow(x[ids,], concavity, expansion, crs)
+    w <- .getConcaveWindow(sf::st_as_sf(points[ids]), concavity, expansion, crs)
     # test window: unexplicably sometimes a point falls outside
-    filled <- sf::st_intersects(x[ids,], w, sparse = FALSE)
+    filled <- sf::st_intersects(points[ids], w, sparse = FALSE)
     # solution: just try again
     while (min(rowSums(filled)) == 0) {
-      x <- sf::st_jitter(x)
-      w <- .getConcaveWindow(x[ids,])
-      filled <- sf::st_intersects(x[ids,], w, sparse = FALSE)
+      w <- .getConcaveWindow(points[ids])
+      filled <- sf::st_intersects(points[ids], w, sparse = FALSE)
     }
   }
   return(w)
 }
 
-.getConcaveWindow <- function(x, concavity, expansion, crs) {
+.getConcaveWindow <- function(points, concavity, expansion, crs) {
   # concaveman hull
-  w <- concaveman::concaveman(x, concavity = concavity)
+  w <- concaveman::concaveman(points, concavity = concavity)
   w <- sf::st_transform(w, crs)
   # use spatstat::exand.owin to make nice expansion
   if (expansion > 0) {
@@ -233,44 +229,49 @@ wmap <- weightedMap
   return(sf::st_geometry(w))
 }
 
-# ========
-# addHoles
-# ========
+# =========
+# makeHoles
+# =========
 
-.addHoles <- function(x, window, holes, expansion, crs) {
+.makeHoles <- function(result, holes, expansion) {
   # combine points for holes
   points <- do.call(rbind, holes)
   points <- sf::st_multipoint(points)
   points <- sf::st_sfc(points, crs = 4326)
   points <- sf::st_cast(points, "POINT")
   # project points
-  points <- sf::st_transform(points, crs = crs)
+  points <- sf::st_transform(points, crs = result$crs)
   # combine with other points
-  coor <- sf::st_coordinates(x)
+  coor <- sf::st_coordinates(result$points)
   coor <- rbind(sf::st_coordinates(points), coor)
   # get closest points
-  w <- spatstat.geom::as.owin(window)
+  w <- spatstat.geom::as.owin(result$window)
   points <- suppressWarnings(
     spatstat.geom::ppp(coor[,1], coor[,2], window = w)
   )
   dist <- spatstat.geom::delaunayDistance(points)
   # make holes
-  allHoles <- sapply(1:length(holes), .makeHole
-                     , coor = coor, d = dist, expansion = expansion, crs = crs
-                     )
+  allHoles <- sapply(1:length(holes), .getHole
+                     , coor = coor
+                     , d = dist
+                     , expansion = expansion
+                     , crs = result$crs
+  )
+  # combine holes
   allHoles <- do.call(c, allHoles)
-  allHoles <-  sf::st_sfc(sf::st_union(sf::st_make_valid(allHoles)))
-  sf::st_crs(allHoles) <- crs
-  # combine holes with window
-  window <- sf::st_sfc(sf::st_difference(window, allHoles))
-  return(window)
+  allHoles <- sf::st_make_valid(allHoles)
+  allHoles <- sf::st_union(allHoles)
+  allHoles <- sf::st_sfc(allHoles, crs = result$crs)
+  # remove holes from original window
+  result$window <- sf::st_sfc(sf::st_difference(result$window, allHoles))
+  return(result)
 }
 
-.makeHole <- function(point, coor, d, expansion, crs) {
+.getHole <- function(point, coor, d, expansion, crs) {
   # make holes inside closest points to provided hole-point
   hole <- spatstat.geom::convexhull.xy(coor[which(d[point,] ==  1),])
-  hole <- sf::st_as_sfc(hole)
-  sf::st_crs(hole) <- crs
+  hole <- sf::st_as_sfc(hole, crs = crs)
+  #sf::st_crs(hole) <- crs
   hole <- sf::st_buffer(hole, -2*expansion)
   hole <- sf::st_buffer(hole, expansion)
   return(hole)
@@ -280,89 +281,95 @@ wmap <- weightedMap
 # makeVoronoi
 # ===========
 
-.makeVoronoi <- function(x, window, crs) {
-  if (length(window) == 1) {
-    voronoi <- .getVoronoi(x, window, crs)
+.makeVoronoi <- function(result) {
+  if (length(result$window) == 1) {
+    voronoi <- .getVoronoi(result$points, result$window)
   } else {
     # combine separate voronoi parts into one geometry
-    distr <- sf::st_intersects(x, window, sparse = FALSE)
+    distr <- sf::st_intersects(result$points, result$window, sparse = FALSE)
     separate <- sapply(1:ncol(distr), function(i) {
-      .getVoronoi(x[which(distr[,i] != 0),], window[i,], crs)
+      .getVoronoi(result$points[which(distr[,i] != 0)], result$window[i])
     }, simplify = FALSE)
     voronoi <- do.call(c, separate)
   }
   # get voronoi in right order
-  order <- unlist(sf::st_intersects(x, voronoi))
+  order <- unlist(sf::st_intersects(result$points, voronoi))
   voronoi <- voronoi[order,]
-  #voronoi <- sf::st_make_valid(sf::st_set_precision(voronoi, 1e6))
-  #voronoi <- sf::st_cast(voronoi, "MULTIPOLYGON")
-  return(voronoi)
+  # make right format
+  voronoi <- sf::st_make_valid(sf::st_set_precision(voronoi, 1e6))
+  result$voronoi <- sf::st_cast(voronoi, "MULTIPOLYGON")
+  return(result)
 }
 
-.getVoronoi <- function(x, window, crs) {
-  if (nrow(x) == 1) {
-    return(sf::st_geometry(window))
+.getVoronoi <- function(points, window) {
+  if (length(points) == 1) {
+    # do nothing with just one point in window
+    v <- sf::st_geometry(window)
   } else {
-    # this is hocus-pocus!
-    v <- sf::st_voronoi(sf::st_union(x))
-    v <- sf::st_intersection(sf::st_cast(v), window)
-    v <- sf::st_join(x = sf::st_sf(v), y = x, join=sf::st_intersects)
+    # make voronoi inside window
+    v <- sf::st_voronoi(sf::st_union(points), envelope = sf::st_geometry(window))
+    v <- sf::st_cast(v)
+    v <- sf::st_intersection(v, window)
     v <- sf::st_cast(v, "MULTIPOLYGON")
-    # union of individual voronoi elements
-    v <- sapply(sf::st_geometry(v), sf::st_union, simplify = FALSE)
-    return(sf::st_sfc(v, crs = crs))
+
+    # split non-contiguous polygons and union loose parts
+    v <- sf::st_cast(v, "POLYGON")
+    empty <- sf::st_intersects(v, points, sparse = F)
+    empty <- which(!apply(empty, 1, any))
+    if (length(empty) > 0) {
+      near <- sf::st_nearest_feature(v)[empty]
+      for (i in 1:length(empty)) {
+        v[near[i]] <- sf::st_union(v[near[i]], v[empty[i]])
+      }
+      v <- v[-empty]
+    }
+    v <- sf::st_cast(v)
   }
+  return(v)
 }
 
 # =============
 # makeCartogram
 # =============
 
-.makeCarto <- function(x, voronoi, weights, window, grouping, maxit, crs, method) {
-  # using package cartogramR
-  tmp <- sf::st_sf(voronoi = voronoi, weights = weights)
-  sf::st_geometry(tmp) <- "voronoi"
-  carto <- cartogramR::cartogramR(tmp, count = "weights", method = method
-                                  , options = list(maxit = maxit))
-  # make valid new points
-  valid_points <- data.frame(carto$final_centers)
-  valid_points <- sf::st_as_sf(valid_points, coords=c(1,2), crs = crs)
-  # make valid polygons
-  valid_carto <- sf::st_make_valid(sf::st_set_precision(carto$cartogram, 1e6))
-  # add grouping to polygons
-  groups <- names(table(grouping))
-  w <- sapply(groups, function(i) {
-    sf::st_union(valid_carto[grouping == i,])
-  })
-  w <- sf::st_sfc(w, crs = crs)
-  # reset points when outside window
-  filled <- sf::st_intersects(valid_points, w, sparse = FALSE)
-  outside <- which(rowSums(filled) == 0)
-  if (length(outside) > 0) {
-    valid_points[outside, ] <- x[outside, ]
+.setWeights <- function(result, weights) {
+  if (length(weights) ==  1 && weights == "equal") {
+    # default to equally-sized polygons
+    weights <- rep(1, times = length(result$points))
+  } else if (!is.null(result$outsideWindow)) {
+    # remove weights for points outside window
+    weights <- weights[-result$outsideWindow]
   }
-  # sometimes even the original points lie outside the deformed window
-  # find the closest point inside
-  filled <- sf::st_intersects(valid_points, w, sparse = FALSE)
-  outside <- which(rowSums(filled) == 0)
-  if (length(outside) > 0) {
-    for (p in outside) {
-      near <- sf::st_nearest_points(valid_points[p, ], w)
-      # sometimes the nearest point is just outside, because of rounding errors
-      tmp <- sf::st_cast(near, "POINT")
-      tmp <- (tmp[[2]]-tmp[[1]])*1.1 + tmp[[1]]
-      sf::st_geometry(valid_points[p, ]) <- sf::st_sfc(sf::st_cast(tmp, "POINT"))
-    }
-  }
-  # check if really all points are captured
-  filled <- sf::st_intersects(valid_points, w, sparse = FALSE)
-  outside <- which(rowSums(filled) == 0)
-  if (length(outside) > 0) {
-    warning("there are still points outside, see $problems", call. = FALSE)
-    valid_carto <- valid_carto[-outside,]
-    valid_points <- valid_points[-outside,]
+  result$weights <- weights
+  return(result)
+}
+
+.makeCarto <- function(result, method, maxit, verbose) {
+  # check if this is first run or second run
+  if (hasName(result, "weightedVoronoi")) {
+    voronoi <- result$weightedVoronoi
   } else {
-    outside <- NULL
+    voronoi <- result$voronoi
   }
-  return(list(polygons = w, centers = valid_points, outside = outside))
+  # use package cartogramR
+  v <- sf::st_sf(geometry = voronoi, weights = result$weights)
+  carto <- cartogramR::cartogramR(v, count = "weights", method = method
+                                  , options = list(maxit = maxit, verbose = verbose))
+  # make valid polygons
+  cartogram <- sf::st_set_precision(sf::st_geometry(carto$cartogram), 1e6)
+  valid_carto <- sf::st_make_valid(cartogram)
+  valid_carto <- sf::st_difference(valid_carto)
+  # add grouping to polygons and unionize
+  groups <- names(table(result$grouping))
+  w <- sapply(groups, function(i) {
+    sf::st_union(valid_carto[as.character(result$grouping) == i,])
+  })
+  w <- sf::st_sfc(w, crs = result$crs)
+  result$weightedWindow <- sf::st_cast(w)
+  # new points
+  result$weightedPoints <- sf::st_point_on_surface(valid_carto)
+  # repeat voronoi to regularize map
+  tmp <- list(points = result$weightedPoints, window = result$weightedWindow)
+  result$weightedVoronoi <- .makeVoronoi(tmp)$voronoi
+  return(result)
 }
