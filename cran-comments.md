@@ -1,37 +1,15 @@
-# qlcVisualize, version 0.3
+# qlcVisualize, version 0.4
 
-  New submission
-  
-  Package was archived on CRAN
-  
-  CRAN repository db overrides:
-    X-CRAN-Comment: Archived on 2024-05-27 as requires archived package
-      'geodata'.
-
-## Comments on automatic incoming checks
-
-- Package 'geodata' is back on CRAN
-- The spelling of "Voronoi" is correct
-- Reference to package "deldir" is removed in Rd
-- I have reduced the examples to an absolute minimum running time. 
-
-Note: There are various individual examples that each cannot be reduced further. 
-I could only reduce the time by removing examples, which I would rather not do.
+Revision
 
 ## Changes
 
-- Update to move towards library 'sf' for geographic routines
-- Deprecating various functions that rely on outdated functions
-- Replacing them with a new approach 'weightedMap'
+- Update dependency on cartogramR
+- Rewrite of 'weightedMap'
 
 ## Known issues
 
-The runtime of the examples is high, but reducing would result in warnings 
-of failing convergence of the function 'weightedMap'.
-
-There is an S3 conflict between two dependencies: both the package "sf" and
-the package "seriation" appear to overwrite the method 'print.registry_field'
-from 'proxy'.
+There is one /dontrun example, because it involves a download. It is included to show a more involved example
 
 ## Test environments
 
@@ -41,10 +19,7 @@ from 'proxy'.
 
 ## R CMD check results
 
-There were 0 errors, 0 warning, 1 notes
-
-\donttest examples in the Rd of 'weightedMap' gives a warning to the user, 
-which is intentional as an example to the functionality.
+There were 0 errors, 0 warning, 0 notes
 
 ## Downstream dependencies
 
