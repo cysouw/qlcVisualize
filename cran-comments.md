@@ -9,11 +9,11 @@ Revision
 
 ## Known issues
 
-There is one /dontrun example, because it involves a download. It is included to show a more involved example
+There is one \dontrun example, because it involves a download. It is included to show a more involved example
 
 ## Test environments
 
-- devtools::check(remote = TRUE, manual = TRUE) on local macOS 14.5 install, R version 4.4.0
+- devtools::check(remote = TRUE, manual = TRUE) on local macOS 14.5, R version 4.4.0
 - devtools::check_win_devel(args = "--resave-data") for Windows on r-devel
 - rhub::rhub_check() for Linux, Windows and old macOS
 

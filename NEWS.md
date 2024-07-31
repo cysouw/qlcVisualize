@@ -28,7 +28,7 @@
 * adding option 'ignore.others' in lmap
 * reorder plotting in lmap
 * allow for single row or column in limage
-* bigfixes in vmap and hullToOwin
+* bugfixes in vmap and hullToOwin
 
 # qlcVisualize 0.1.0
 

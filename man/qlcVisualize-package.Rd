@@ -6,7 +6,7 @@
 Visualizations for Quantitative Language Comparison
 }
 \description{
-A collection of specific visualisations of data as used in quantitative language compariseon.
+A collection of specific visualisations of data as used in quantitative language comparison.
 }
 \details{
 \tabular{ll}{

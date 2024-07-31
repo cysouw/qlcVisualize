@@ -9,7 +9,7 @@ Summary of the data in Haspelmath (1997), classical example of the usage of sema
 }
 \usage{data(haspelmath)}
 \format{
-The dataset is a matrix with nine rows, describing the different indefinite functions, and 134 columns documenting for each individual construction which functions are possiblu expressed by it.
+The dataset is a matrix with nine rows, describing the different indefinite functions, and 134 columns documenting for each individual construction which functions are possibly expressed by it.
 }
 \source{
 Haspelmath, Martin. Indefinite Pronouns. Oxford Studies in Typology and Linguistic Theory. Oxford: Clarendon, 1997.

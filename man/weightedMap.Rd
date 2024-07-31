@@ -5,7 +5,7 @@
 Construct weighted map using Voronoi tessellation and cartogram weighting
 }
 \description{
-A weighted map ("wmap") is a combination of a Voronoi tesselation with cartogram weighting. A Voronoi map is a tessellation of a surface based on a set of geographic points. It is used to display areal patterns without overlap. Additionally, the size of the tiles can be weighted by cartogram-deformation to allow for varying the visual impression of the data. Specifically, this allows for equal-area-sized tiles to equally represent all data-points in the visual display.
+A weighted map ("wmap") is a combination of a Voronoi tessellation with cartogram weighting. A Voronoi map is a tessellation of a surface based on a set of geographic points. It is used to display areal patterns without overlap. Additionally, the size of the tiles can be weighted by cartogram-deformation to allow for varying the visual impression of the data. Specifically, this allows for equal-area-sized tiles to equally represent all data-points in the visual display.
 }
 \usage{
 weightedMap(x, y = NULL, window = NULL, crs = NULL, weights = "equal",
@@ -43,10 +43,10 @@ Influence the form of the concave window around the coordinates. Only used when 
 Influence the form of the concave window around the coordinates. Only used when there is no \code{window} provided. Expands the window (value in meters), and results in more "rounded" windows.
 }
   \item{method}{
-Method used for cartogram deformation, passed to \code{\link[cartogramR]{cartogramR}}. By default, the older-quicker-less accurate methd \code{dcn} is used. More modern and accurate methods \code{gsm} and \code{gn} can also be used, but they might lead to strange results with more complex windows. They also sometimes lead to strange results, or downright stall. Lower \code{maxit} might prevent these problems, but lead to less accurate weighting. Also consider the option \code{verbose} to get an indication where things go wring.
+Method used for cartogram deformation, passed to \code{\link[cartogramR]{cartogramR}}. By default, the older-quicker-less accurate method \code{dcn} is used. More modern and accurate methods \code{gsm} and \code{gn} can also be used, but they might lead to strange results with more complex windows. They also sometimes lead to strange results, or downright stall. Lower \code{maxit} might prevent these problems, but lead to less accurate weighting. Also consider the option \code{verbose} to get an indication where things go wring.
 }
   \item{maxit}{
-Maximum number of iterations to find a suitable deformation. Paramter passed internally to \code{\link[cartogramR]{cartogramR}}. Higher values lead to better approximations of the size of the polygons to the weights. However, with complex maps it might take very long to converge (or even never finish).
+Maximum number of iterations to find a suitable deformation. Parameter passed internally to \code{\link[cartogramR]{cartogramR}}. Higher values lead to better approximations of the size of the polygons to the weights. However, with complex maps it might take very long to converge (or even never finish).
 }
   \item{verbose}{
 With \code{verbose = 1} turn on verbose output for \code{\link[cartogramR]{cartogramR}} to check where the deformation might run wild
@@ -89,7 +89,7 @@ Numeric vector with the weights used for the deformation. Weights for coordinate
 Coordinates after the weighting-deformation, specified as a projected \code{sfc_POINT} object.
 }
 \item{weightedWindow: }{
-Window after the weighting-deformation, specifed as a projected \code{sfc_POLYGON} or \code{sfc_MULTIPOLYGON} object.
+Window after the weighting-deformation, specified as a projected \code{sfc_POLYGON} or \code{sfc_MULTIPOLYGON} object.
 }
 \item{weightedMap: }{
 Voronoi-tessellation after the weighting-deformation, specified as a projected \code{sfc_MULTIPOLYGON} object.

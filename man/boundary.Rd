@@ -34,7 +34,7 @@ Logical: by default the impact of the chosen parameters is shown. If \code{FALSE
 }
 }
 \details{
-Instead of trying to use a polygon as a boundary for the interpolation internally in \code{\link{levelMap}} it turned out to be easier to use a collection of points that mark th
+Instead of trying to use a polygon as a boundary for the interpolation internally in \code{\link{levelMap}} it turned out to be easier to use a collection of points that mark the outside.
 }
 \value{
 By default, returns a plot with the original points in black, the points below density in red, and the box around the points in blue. Contour lines of the density are shown to choose different density parameters.

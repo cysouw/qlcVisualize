@@ -4,7 +4,7 @@
 Heeringa-style colours
 }
 \description{
-Proposed in Heeringa (2004) to colour a (dis)similarity by decomposing it into three dimensions (using \code{cmdscale} here) and then mapping these dimensions to RGB to make colours. Hihgly useful to visualize pairwise similarities between geographic regions.
+Proposed in Heeringa (2004) to colour a (dis)similarity by decomposing it into three dimensions (using \code{cmdscale} here) and then mapping these dimensions to RGB to make colours. Highly useful to visualize pairwise similarities between geographic regions.
 }
 \usage{
 heeringa(dist, power = 0.5, mapping = c(1, 2, 3), method = "eigs", center = NULL)
@@ -18,7 +18,7 @@ heeringa(dist, power = 0.5, mapping = c(1, 2, 3), method = "eigs", center = NULL
 Factor used to influence the results of the multidimensional scaling. Values closer to one will lead to clearer separated colours, while higher values will lead to more gradual colours.
   }
   \item{mapping}{
-Optional vector to change the mapping of the dimensions to the colours. Should be of length 3, specifying to which color each of the three dimensions is mapped. A 1 means 'red', a 2 meand 'green' and a 3 means 'blue'. Adding a minus reverses the mapping.
+Optional vector to change the mapping of the dimensions to the colours. Should be of length 3, specifying to which color each of the three dimensions is mapped. A 1 means 'red', a 2 means 'green' and a 3 means 'blue'. Adding a minus reverses the mapping.
 }
   \item{method}{
 Method used to determine the colour dimensions. Either \code{mds} (nicer colourbalance) or \code{eigs} (much faster).

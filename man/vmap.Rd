@@ -46,7 +46,7 @@ Outer boundary for the Voronoi tessellation. Should be in the form of an \code{\
   }
 }
 \details{
-This code is almost completely based on functions from the \code{spatstat.geom} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat.geom}. Then a Voronoi tessellation can be made (based on the function \code{\link[spatstat.geom]{dirichlet}}, which in turn is based on \code{deldir} from the package \code{deldir}). Finally, this tessalation can be plotted filled with different colours.
+This code is almost completely based on functions from the \code{spatstat.geom} package. For convenience, first some geographical boundaries can easily be accessed and converted for use in \code{spatstat.geom}. Then a Voronoi tessellation can be made (based on the function \code{\link[spatstat.geom]{dirichlet}}, which in turn is based on \code{deldir} from the package \code{deldir}). Finally, this tessellation can be plotted filled with different colours.
 
 Any legends have to be added manually by using \code{\link[graphics]{legend}}, see examples below.
 

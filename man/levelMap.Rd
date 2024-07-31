@@ -7,7 +7,7 @@ Drawing multi-level maps (e.g. semantic maps or linguistic isoglosses)
 \description{
 A multi-level map ("lmap") is a plot of the distribution of nominal data with multiple levels in space. Such visualisations have two direct use-case in linguistics, viz. semantic maps and isoglosses. The drawing if the lines in space is performed by interpolation in this function (see details).
 
-Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. An level-map tries to emulate this linguistic visualiation in an automatic fashion with various options for visual presentation.
+Semantic maps (Haspelmath 2003) are a visualisation of linguistic diversity. A semantic map shows a predefined configuration of functions/senses in two-dimensional space with an overlay of language-specific encoding of these functions/senses. An level-map tries to emulate this linguistic visualisation in an automatic fashion with various options for visual presentation.
 
 Isoglosses show lines surrounding similar phenomena in space. Instead of drawing an exact boundary around measured points, an interpolation-technique is used here to show areas of interest. By only showing boundaries, multiple phenomena can be shown in one graphic.
 }
@@ -45,13 +45,13 @@ levelMap(points, data,
   Colour specification, either in the form of the name of a built-in color palettes, like \link{rainbow}, or a manually specified vector of colors. When \link{NULL}, an attempt is made to use grey-scales.
 }
   \item{add}{
-  Logical: should the plot be added to an exitings plot or not?
+  Logical: should the plot be added to an existing plot or not?
 }
   \item{ignore.others}{
   Logical: ignore all other categories, not selected through \code{draw}.
 }
   \item{normalize.frequency}{
-  Logical: should rows of data (points in the plot) be normalized to 1? Usefull only for data that represent frequency of occurence as columns. Note that setting this to \code{FALSE} influences the behaviour of \code{levels}.
+  Logical: should rows of data (points in the plot) be normalized to 1? Useful only for data that represent frequency of occurence as columns. Note that setting this to \code{FALSE} influences the behaviour of \code{levels}.
 }
 \item{scale.pies}{
   logical: for multivalued data: should the size of the pies represent frequencies (\code{TRUE}) or all be of the same size (\code{FALSE}, by default)?
@@ -82,7 +82,7 @@ Additional parameters optionally passed to \link{boundary} for the specification
 }
 }
 \details{
-The basic idea is to use some kind of interpolation to show areas of high-occurrence of a specific phonenomenon. Internally Kriging is used, and then only contour lines are shown of the interpolation. Multiple lines are suggested to indicate the probibabilistic interpretation of the lines.
+The basic idea is to use some kind of interpolation to show areas of high-occurrence of a specific phenomenon. Internally Kriging is used, and then only contour lines are shown of the interpolation. Multiple lines are suggested to indicate the probibalistic interpretation of the lines.
 }
 \value{
 A plot is produces with the different phenomena in space surrounded by lines. When multiple options are possible at each point then pie charts are added.

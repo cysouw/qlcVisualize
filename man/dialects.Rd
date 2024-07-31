@@ -5,7 +5,7 @@
 Multiple correspondences of "f"-like sounds in German Dialects
 }
 \description{
-In total 34 different words in which an f-like sound occurs. The differnt pronunciations of this sound in 183 different German villages are included in this dataset.
+In total 34 different words in which an f-like sound occurs. The different pronunciations of this sound in 183 different German villages are included in this dataset.
 }
 \usage{data(dialects)}
 \format{
