@@ -13,7 +13,7 @@ A collection of specific visualisations of data as used in quantitative language
 Package: \tab qlcVisualize\cr
 Type: \tab Package\cr
 Version: \tab 0.4\cr
-Date: \tab 2024-31-07\cr
+Date: \tab 2024-07-31\cr
 License: \tab GPL-3\cr
 }
 Currently implemented are visualisations dealing nominal data with multiple levels \link{lmap} ("levelMap") and \link{fmap} ("factorMap"), and some assistance for making of weighted geographic Voronoi maps \link{wmap} ("weigthedMap").

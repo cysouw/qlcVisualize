@@ -14,7 +14,7 @@ There is one /dontrun example, because it involves a download. It is included to
 ## Test environments
 
 - devtools::check(remote = TRUE, manual = TRUE) on local macOS 14.5 install, R version 4.4.0
-- devtools::check_win_devel() for Windows on r-devel
+- devtools::check_win_devel(args = "--resave-data") for Windows on r-devel
 - rhub::rhub_check() for Linux, Windows and old macOS
 
 ## R CMD check results

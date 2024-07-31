@@ -74,7 +74,7 @@ By default, a plot is returned. When \code{FALSE}, nothing is plotted, but the r
 \details{
 There are many different orderings implemented: \code{"pca"} and \code{"varimax"} use the second dimension of \link{prcomp} and \link{varimax} respectively. \code{"eig"} will use the first eigenvector as computed by \link[RSpectra]{eigs}. This is really quick for large datasets. \code{"mds"} will use the first dimension of \link{cmdscale}.
 
-Further, all methods as provided in the function \link[seriation]{seriate} can be called. Specifcally, \code{"R2E"} and \code{"MDS_angle"} seem worthwhile to try out. Any paramters for these methods can be passed using the option \link{control}.
+Further, all methods as provided in the function \link[seriation]{seriate} can be called. Specifcally, \code{"R2E"} and \code{"MDS_angle"} seem worthwhile to try out. Any parameters for these methods can be passed using the option \code{control}.
 }
 \value{
 A plot is returned by default. When \code{plot = FALSE}, a list is returned with the reordering of the rows and the columns.

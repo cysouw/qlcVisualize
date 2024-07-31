@@ -5,7 +5,7 @@ Description: Collection of visualizations as used in quantitative language
   multiple levels ("level map" and "factor map"), and assistance for making 
   weighted geographical Voronoi-maps ("weighted map").
 Version: 0.4
-Date: 2024-31-07
+Date: 2024-07-31
 Authors@R:
   person(
     "Michael", "Cysouw", 
