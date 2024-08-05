@@ -7,7 +7,7 @@ Add contourlines to a map
 Convenience function to add contourlines to a map, specifically geared towards suggesting boundaries to the result of \link{weightedMap}. Internally based on a krige-interpolation.
 }
 \usage{
-addContour(heights, points, window, crs,
+addContour(heights, points, window, crs, add = TRUE,
            levels = c(0.4, 0.45, 0.5), grid = 50000, ...)
 }
 \arguments{
@@ -23,6 +23,9 @@ Window for the interpolation as \code{sfc_POLYGON} or an sf object with such a g
   \item{crs}{
 A crs in WKT format.
 }
+  \item{add}{
+By default, contourlines are added to the previous plot. Otherwise, they are returns as \code{sfc_LINESTRINGS}.
+  }
   \item{levels}{
 Levels on which to draw the contourlines. Multiple lines get thicker towards higher values to suggest a center. These levels have to be related relative to the \code{heights}.
 }
@@ -37,7 +40,7 @@ Additional specifications passed internally to \code{\link{contour}}.
 Internally, a grid is made inside the window and the height is interpolated using ordinary kriging from \code{[gstat]{krige}} with a model suggested by \code{\link[automap]{autofitVariogram}}.
 }
 \value{
-Contourlines are added to the current plot.
+Contourlines are added to the current plot or (when \code{add=FALSE}) they are returned as an sf object with a \code{sfc_LINESTRING} geometry.
 }
 \author{
 Michael Cysouw <cysouw@mac.com>
@@ -68,10 +71,10 @@ sf::st_crs(p) <- 4326
 p <- sf::st_transform(p, 2397)
 
 # plot map
-plot(p, col = cols[as.character(heights)], border = NA, pch = 19)
-plot(w, add = TRUE, border = "grey")
+plot(st_geometry(p), col = cols[as.character(heights)], pch = 19)
+plot(st_geometry(w), add = TRUE, border = "grey")
 
 # add boundary
 addContour(heights, points = p, window = w, crs = 2397, grid = 1000,
-            levels = c(0.25, 0.35, 0.45), col = "blue")
+            levels = c(0.25, 0.35, 0.45, 0.55), col = "blue")
 }

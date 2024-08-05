@@ -1,4 +1,4 @@
-addContour <- function(heights, points, window, crs,
+addContour <- function(heights, points, window, crs, add = TRUE,
                        levels = c(.4, .45, .5), grid = 5e4, ...) {
 
   # prepare data
@@ -17,15 +17,23 @@ addContour <- function(heights, points, window, crs,
   # ordinary kriging
   m <- automap::autofitVariogram(feature ~ 1, data)
   k <- gstat::krige(feature ~ 1, data, newdata = grd, model = m$var_model)
-  z <- k["var1.pred",,]
 
-  # draw contour with default lwd
-  if (is.null(list(...)$lwd)) {
-    lwd <- rev(seq(2, 0.5, length.out = length(levels)))
-    contour(z, add = TRUE, drawlabels = FALSE,
-            levels = levels, lwd = lwd, ...)
+  if (add) {
+    # draw contour with default lwd
+    z <- k["var1.pred",,]
+    if (is.null(list(...)$lwd)) {
+      lwd <- rev(seq(2, 0.5, length.out = length(levels)))
+      contour(z, add = TRUE, drawlabels = FALSE,
+              levels = levels, lwd = lwd, ...)
+    } else {
+      contour(z, add = TRUE, drawlabels = FALSE,
+              levels = levels, ...)
+    }
   } else {
-    contour(z, add = TRUE, drawlabels = FALSE,
-            levels = levels, ...)
+    # return linestrings
+    cont <- stars::st_contour(k["var1.pred"], na.rm = FALSE,
+                            contour_lines = TRUE, breaks = levels)
+    names(cont)[1] <- "levels"
+    return(cont)
   }
 }
