@@ -43,7 +43,7 @@ Influence the form of the concave window around the coordinates. Only used when 
 Influence the form of the concave window around the coordinates. Only used when there is no \code{window} provided. Expands the window (value in meters), and results in more "rounded" windows.
 }
   \item{method}{
-Method used for cartogram deformation, passed to \code{\link[cartogramR]{cartogramR}}. By default, the older-quicker-less accurate method \code{dcn} is used. More modern and accurate methods \code{gsm} and \code{gn} can also be used, but they might lead to strange results with more complex windows. They also sometimes lead to strange results, or downright stall. Lower \code{maxit} might prevent these problems, but lead to less accurate weighting. Also consider the option \code{verbose} to get an indication where things go wring.
+Method used for cartogram deformation, passed to \code{\link[cartogramR]{cartogramR}}. By default, the older-quicker-less accurate method \code{dcn} is used. More modern and accurate methods \code{gsm} and \code{gn} can also be used, but they might lead to strange results with more complex windows. They also sometimes downright stall as they appear to fall into an infinite loop. Lower \code{maxit} might prevent these problems, but lead to less accurate weighting. Also consider the option \code{verbose} to get an indication where things go wrong.
 }
   \item{maxit}{
 Maximum number of iterations to find a suitable deformation. Parameter passed internally to \code{\link[cartogramR]{cartogramR}}. Higher values lead to better approximations of the size of the polygons to the weights. However, with complex maps it might take very long to converge (or even never finish).
@@ -96,6 +96,8 @@ Voronoi-tessellation after the weighting-deformation, specified as a projected \
 }
 }
 \note{
+Various additional checks and corrections are added to prevent as many as possible errors that arise in the deformation process. However, this comes at the cost of rather long runtime with large maps.
+
 With more complex windows the deformation by \code{\link[cartogramR]{cartogramR}} might throw errors (like "IllegalArgumentException") or fall into an infinite loop. Try to reduce \code{maxit} and check \code{verbose = 1} to get an idea what might be going wrong.
 }
 \author{
@@ -144,13 +146,6 @@ plot(v$weightedVoronoi, col = "grey")
 # load worldmap
 data(world)
 
-# try different projections
-azimuth_equaldist  <- "+proj=aeqd +lat_0=90 +lon_0=45"
-mollweide_atlantic <- "+proj=moll +lon_0=11.5"
-mollweide_pacific  <- "+proj=moll +lon_0=151"
-
-plot(sf::st_transform(world, crs = azimuth_equaldist))
-
 # load WALS data, example feature 13: "tone"
 library(lingtypology)
 feature <- "13A"
@@ -166,11 +161,12 @@ wals <- merge(wals[,c("glottocode", "wals.code", feature)],
               glottolog[,c("glottocode", "longitude", "latitude")])
 
 # calculate an equally-weighted voronoi transformation
+# using atlantic-centered interrupted mollweide projection
 v <- weightedMap(wals$longitude, wals$latitude, window = world,
-                  crs = mollweide_atlantic, method = "dcn", maxit = 10)
+                  crs = "+proj=imoll +lon_0=11.5", method = "dcn", maxit = 10)
 
 # prepare colors
-cols <- c("lightsalmon", "grey", "lightpink")
+cols <- c("lightsalmon", "lightgrey", "lightpink")
 names(cols) <- names(table(wals[,feature]))
 cols <- cols[c(2,3,1)]
 
@@ -182,11 +178,12 @@ legend("bottomleft", legend = names(cols), fill = cols, cex = .7)
 # add contourlines
 height <- c(0, 0.5, 1)
 names(height) <- c("No tones", "Simple tone system", "Complex tone system")
-addContour(height = height[wals[,feature]],
+addContour(heights = height[wals[,feature]],
            points = v$weightedPoints,
            window = v$weightedWindow,
            crs = v$crs,
-           col = "darkred", levels = c(0.2, 0.4, 0.6))
+           col = "darkred",
+           levels = c(0.2, 0.4, 0.6))
 
 # Alternative: using points instead of polygons
 cols[2:3] <- c("orange", "red")

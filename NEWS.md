@@ -1,3 +1,9 @@
+# qlcVisualize 0.4.1
+
+* update world map, separating Africa and South America
+* update output for addContour
+* bugfixes and additional checks in weightedMap
+
 # qlcVisualize 0.4
 
 * complete rewrite of weightedMap

@@ -129,10 +129,9 @@ wmap <- weightedMap
   }
   if (is(window, "sf") || is(window, "sfc")) {
     # make valid window
-    window <- sf::st_make_valid(sf::st_set_precision(window, 1e6))
     window <- sf::st_transform(window, result$crs)
-    window <- sf::st_make_valid(window)
     window <- sf::st_cast(window, "MULTIPOLYGON")
+    window <- sf::st_make_valid(window)
   } else {
     stop("Provided window cannot be interpreted: try to use sf format")
   }
@@ -168,7 +167,6 @@ wmap <- weightedMap
     )
   }
   # make grouping of points from provided window
-  #filled <- sf::st_intersects(result$points, result$window)
   result$grouping <- as.character(unlist(apply(filled, 1, which)))
   return(result)
 }
@@ -208,7 +206,7 @@ wmap <- weightedMap
     filled <- sf::st_intersects(points[ids], w, sparse = FALSE)
     # solution: just try again
     while (min(rowSums(filled)) == 0) {
-      w <- .getConcaveWindow(points[ids])
+      w <- .getConcaveWindow(sf::st_as_sf(points[ids]), concavity, expansion, crs)
       filled <- sf::st_intersects(points[ids], w, sparse = FALSE)
     }
   }
@@ -271,7 +269,6 @@ wmap <- weightedMap
   # make holes inside closest points to provided hole-point
   hole <- spatstat.geom::convexhull.xy(coor[which(d[point,] ==  1),])
   hole <- sf::st_as_sfc(hole, crs = crs)
-  #sf::st_crs(hole) <- crs
   hole <- sf::st_buffer(hole, -2*expansion)
   hole <- sf::st_buffer(hole, expansion)
   return(hole)
@@ -296,7 +293,8 @@ wmap <- weightedMap
   order <- unlist(sf::st_intersects(result$points, voronoi))
   voronoi <- voronoi[order,]
   # make right format
-  voronoi <- sf::st_make_valid(sf::st_set_precision(voronoi, 1e6))
+  voronoi <- sf::st_make_valid(voronoi)
+  #voronoi <- suppressWarnings(sf::st_collection_extract(voronoi, "POLYGON"))
   result$voronoi <- sf::st_cast(voronoi, "MULTIPOLYGON")
   return(result)
 }
@@ -310,6 +308,7 @@ wmap <- weightedMap
     v <- sf::st_voronoi(sf::st_union(points), envelope = sf::st_geometry(window))
     v <- sf::st_cast(v)
     v <- sf::st_intersection(v, window)
+    v <- suppressWarnings(sf::st_collection_extract(v, "POLYGON"))
     v <- sf::st_cast(v, "MULTIPOLYGON")
 
     # split non-contiguous polygons and union loose parts
@@ -340,7 +339,8 @@ wmap <- weightedMap
     # remove weights for points outside window
     weights <- weights[-result$outsideWindow]
   }
-  result$weights <- weights
+  # treat as numeric
+  result$weights <- as.numeric(weights)
   return(result)
 }
 
@@ -356,18 +356,24 @@ wmap <- weightedMap
   carto <- cartogramR::cartogramR(v, count = "weights", method = method
                                   , options = list(maxit = maxit, verbose = verbose))
   # make valid polygons
-  cartogram <- sf::st_set_precision(sf::st_geometry(carto$cartogram), 1e6)
-  valid_carto <- sf::st_make_valid(cartogram)
+  valid_carto <- sf::st_make_valid(sf::st_geometry(carto$cartogram))
   valid_carto <- sf::st_difference(valid_carto)
+  # new points
+  result$weightedPoints <- sf::st_point_on_surface(valid_carto)
+  # remove loose ends
+  valid_carto <- suppressWarnings(sf::st_collection_extract(valid_carto, "POLYGON"))
+  valid_carto <- sf::st_cast(valid_carto, "MULTIPOLYGON")
+  valid_carto <- sf::st_cast(valid_carto, "POLYGON")
+  filled <- sf::st_intersects(result$weightedPoints, valid_carto, sparse = FALSE)
+  filled <- colSums(filled) != 0
+  valid_carto <- valid_carto[filled]
   # add grouping to polygons and unionize
   groups <- names(table(result$grouping))
   w <- sapply(groups, function(i) {
-    sf::st_union(valid_carto[as.character(result$grouping) == i,])
+    sf::st_union(valid_carto[as.character(result$grouping) == i])
   })
   w <- sf::st_sfc(w, crs = result$crs)
   result$weightedWindow <- sf::st_cast(w)
-  # new points
-  result$weightedPoints <- sf::st_point_on_surface(valid_carto)
   # repeat voronoi to regularize map
   tmp <- list(points = result$weightedPoints, window = result$weightedWindow)
   result$weightedVoronoi <- .makeVoronoi(tmp)$voronoi

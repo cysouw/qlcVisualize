@@ -9,7 +9,7 @@ A polygon representing a worldmap tailored to be not too detailed, but still fit
 }
 \usage{data("world")}
 \format{
-  The format is a \code{sfc_POLYGON} of length 475 with an EPSG:4326 projection.
+  The format is a \code{sfc_POLYGON} of length 477 with an EPSG:4326 projection.
 }
 \details{
 Some trickery was needed to produce a lightweight polygon to represent the worldmap in reasonably accuracy without becoming too large and unwiedly. The polygons are such that all coordinates for languages as listed in the glottolog (version 5) are inside these polygons.
@@ -23,10 +23,10 @@ Polygons are based on the data from \url{https://www.naturalearthdata.com} with 
 data(world)
 plot(world)
 
-# use different projections
-azimuth_equaldist <- "+proj=aeqd +lat_0=90 +lon_0=45"
-mollweide_atlantic <- "+proj=moll +lon_0=11.5"
-mollweide_pacific <- "+proj=moll +lon_0=151"
+# try different projections
+mollweide_atlantic <- "+proj=imoll +lon_0=11.5"
+equalearth_pacific <- "+proj=eqearth +lon_0=151"
+azimuth_equaldist  <- "+proj=aeqd +lat_0=90 +lon_0=45"
 
 plot(sf::st_transform(world, crs = azimuth_equaldist))
 }

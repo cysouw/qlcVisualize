@@ -1,9 +1,9 @@
-addContour <- function(heights, points, window, crs, add = TRUE,
+addContour <- function(heights, points, window, crs, add = TRUE, polygons = FALSE,
                        levels = c(.4, .45, .5), grid = 5e4, ...) {
 
   # prepare data
   data <- sf::st_sf(geometry = sf::st_geometry(points), feature = heights, crs = crs)
-  w <- sf::as_Spatial(st_geometry(window))
+  w <- sf::as_Spatial(sf::st_geometry(window))
 
   # make grid inside polygons
   grd <- as.data.frame(sp::spsample(w, "regular", n = grid))
@@ -30,9 +30,9 @@ addContour <- function(heights, points, window, crs, add = TRUE,
               levels = levels, ...)
     }
   } else {
-    # return linestrings
+    # return linestrings or polygons
     cont <- stars::st_contour(k["var1.pred"], na.rm = FALSE,
-                            contour_lines = TRUE, breaks = levels)
+                            contour_lines = !polygons, breaks = levels)
     names(cont)[1] <- "levels"
     return(cont)
   }

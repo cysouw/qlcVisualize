@@ -48,4 +48,18 @@ world <- sf::st_make_valid(all)
 # crop greenland to allow for nicer pacific centered maps
 world[434] <- st_crop(world[434], c(xmin = -73, ymin = 59, xmax = -30, ymax = 84))
 
+# separate Africa
+l <- sf::st_as_sfc("LINESTRING (32.6 29.7, 32.6 31.2)", crs = 4326)
+l <- sf::st_transform(l, "+proj=moll +lon_0=11.5")
+w <- sf::st_transform(world, "+proj=moll +lon_0=11.5")
+w <- lwgeom::st_split(w,l)
+w <- sf::st_collection_extract(w, "POLYGON")
+
+# separate America
+l <- sf::st_as_sfc("LINESTRING (-78.5 7.5, -77 8.5)", crs = 4326)
+l <- sf::st_transform(l, "+proj=moll +lon_0=11.5")
+w <- lwgeom::st_split(w,l)
+w <- sf::st_collection_extract(w, "POLYGON")
+
+world <- sf::st_transform(w, "+proj=latlong")
 save(world, file = "world.rda")
